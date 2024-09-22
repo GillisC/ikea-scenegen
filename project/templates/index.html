@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKEA SceneGen</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1 class="title-text">IKEA SceneGen - Mockup Generator</h1>
+
+    <div class="container">
+        <div class="image-box">
+            {% if image_url %}
+                <img src="{{ image_url }}" alt="Generated Image">
+
+                <a href="{{ image_url}}" download="mockup_image.png" class="download-button">
+                    <button>Download</button>
+                </a>
+
+            {% else %}
+                <img src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-3jmlxcGGqaK7mcKpBdXhE6hD/user-gId5RsX77xVncZ1IK5wnZx07/img-xU2CLcoCtjvxEX5ORG4a2xkv.png?st=2024-09-22T13%3A46%3A33Z&se=2024-09-22T15%3A46%3A33Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-22T00%3A13%3A36Z&ske=2024-09-23T00%3A13%3A36Z&sks=b&skv=2024-08-04&sig=FXVKVnad9dP5B5PF1dc1WsnuBI7AG3Mt2QZi8Ywf5Ec%3D" alt="Generated Image">
+                <a href="https://oaidalleapiprodscus.blob.core.windows.net/private/org-3jmlxcGGqaK7mcKpBdXhE6hD/user-gId5RsX77xVncZ1IK5wnZx07/img-xU2CLcoCtjvxEX5ORG4a2xkv.png?st=2024-09-22T13%3A46%3A33Z&se=2024-09-22T15%3A46%3A33Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-22T00%3A13%3A36Z&ske=2024-09-23T00%3A13%3A36Z&sks=b&skv=2024-08-04&sig=FXVKVnad9dP5B5PF1dc1WsnuBI7AG3Mt2QZi8Ywf5Ec%3D" download="mockup_image.png" class="download-button">
+                    <button>Download</button>
+                </a>
+                <!--<p>No image generated yet.</p>-->
+            {% endif %}
+        </div>
+
+        <div class form-box>
+            <form method="POST">
+                <label for="prompt">Enter a prompt:</label>
+                <input type="text" id="prompt" name="prompt" required>
+                <button type="submit">Generate mockup</button>
+            </form>        
+        </div>
+
+    </div>
+</body>
+</html>
