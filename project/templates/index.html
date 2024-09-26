@@ -11,30 +11,109 @@
 
     <div class="container">
         <div class="image-box">
-            {% if image_url %}
-                <img src="{{ image_url }}" alt="Generated Image">
-
-                <a href="{{ image_url}}" download="mockup_image.png" class="download-button">
-                    <button>Download</button>
-                </a>
-
-            {% else %}
-                <img src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-3jmlxcGGqaK7mcKpBdXhE6hD/user-gId5RsX77xVncZ1IK5wnZx07/img-xU2CLcoCtjvxEX5ORG4a2xkv.png?st=2024-09-22T13%3A46%3A33Z&se=2024-09-22T15%3A46%3A33Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-22T00%3A13%3A36Z&ske=2024-09-23T00%3A13%3A36Z&sks=b&skv=2024-08-04&sig=FXVKVnad9dP5B5PF1dc1WsnuBI7AG3Mt2QZi8Ywf5Ec%3D" alt="Generated Image">
-                <a href="https://oaidalleapiprodscus.blob.core.windows.net/private/org-3jmlxcGGqaK7mcKpBdXhE6hD/user-gId5RsX77xVncZ1IK5wnZx07/img-xU2CLcoCtjvxEX5ORG4a2xkv.png?st=2024-09-22T13%3A46%3A33Z&se=2024-09-22T15%3A46%3A33Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-22T00%3A13%3A36Z&ske=2024-09-23T00%3A13%3A36Z&sks=b&skv=2024-08-04&sig=FXVKVnad9dP5B5PF1dc1WsnuBI7AG3Mt2QZi8Ywf5Ec%3D" download="mockup_image.png" class="download-button">
-                    <button>Download</button>
-                </a>
-                <!--<p>No image generated yet.</p>-->
-            {% endif %}
+            <img id="generated-image" src="{{ image_url }}">
+            <a href="{{ image_url }}" download="mockup_image.png" id="download-link">
+                <button class="download-button">Download</button>
+            </a>
+            <p class="status-text" id="no-image-text">No image generated yet.</p>
+            <div class="loading-bar-container">
+                <div id="loading-bar" class="loading-bar"></div>
+            </div>
         </div>
+        
+        <div class="controls">
+            <div class="toggle-group">
+                <label>Style:</label>
+                <div class="button-group" id="style">
+                    <button type="button" class="toggle-button" data-value="modern">Modern</button>
+                    <button type="button" class="toggle-button" data-value="traditional">Traditional</button>
+                    <button type="button" class="toggle-button" data-value="rustic">Rustic</button>
+                    <button type="button" class="toggle-button" data-value="industrial">Industrial</button>
+                </div>
+            </div>
+            
+            <div class="toggle-group">
+                <label>Season:</label>
+                <div class="button-group" id="season">
+                    <button type="button" class="toggle-button" data-value="summer">Summer</button>
+                    <button type="button" class="toggle-button" data-value="winter">Winter</button>
+                    <button type="button" class="toggle-button" data-value="spring">Spring</button>
+                    <button type="button" class="toggle-button" data-value="fall">Fall</button>
+                </div>
+            </div>
 
-        <div class form-box>
-            <form method="POST">
-                <label for="prompt">Enter a prompt:</label>
-                <input type="text" id="prompt" name="prompt" required>
-                <button type="submit">Generate mockup</button>
-            </form>        
+            <div class="toggle-group">
+                <label>Time of day:</label>
+                <div class="button-group" id="time">
+                    <button type="button" class="toggle-button" data-value="morning">Morning</button>
+                    <button type="button" class="toggle-button" data-value="afternoon">Afternoon</button>
+                    <button type="button" class="toggle-button" data-value="evening">Evening</button>
+                    <button type="button" class="toggle-button" data-value="night">Night</button>
+                </div>
+            </div>
+
+            <!-- Feeling/Atmosphere Group -->
+            <div class="toggle-group">
+                <label>Feeling/Atmosphere:</label>
+                <div class="button-group" id="feeling">
+                    <button type="button" class="toggle-button" data-value="cozy">Cozy</button>
+                    <button type="button" class="toggle-button" data-value="warm">Warm</button>
+                    <button type="button" class="toggle-button" data-value="elegant">Elegant</button>
+                    <button type="button" class="toggle-button" data-value="bright">Bright</button>
+                </div>
+            </div>
+
+            <!-- Materials Group -->
+            <div class="toggle-group">
+                <label>Materials:</label>
+                <div class="button-group" id="materials">
+                    <button type="button" class="toggle-button" data-value="wood">Wood</button>
+                    <button type="button" class="toggle-button" data-value="metal">Metal</button>
+                    <button type="button" class="toggle-button" data-value="glass">Glass</button>
+                    <button type="button" class="toggle-button" data-value="stone">Stone</button>
+                </div>
+            </div>
+
+            <!-- Intended Audience Group -->
+            <div class="toggle-group">
+                <label>Intended Audience:</label>
+                <div class="button-group" id="audience">
+                    <button type="button" class="toggle-button" data-value="family">Family</button>
+                    <button type="button" class="toggle-button" data-value="single-person">Single Person</button>
+                    <button type="button" class="toggle-button" data-value="couples">Couples</button>
+                    <button type="button" class="toggle-button" data-value="students">Students</button>
+                </div>
+            </div>
+
+            <!-- Intended Market Group -->
+            <div class="toggle-group">
+                <label>Intended Market:</label>
+                <div class="button-group" id="market">
+                    <button type="button" class="toggle-button" data-value="europe">Europe</button>
+                    <button type="button" class="toggle-button" data-value="north-america">North America</button>
+                    <button type="button" class="toggle-button" data-value="asia">Asia</button>
+                    <button type="button" class="toggle-button" data-value="south-america">South America</button>
+                </div>
+            </div>
+
+            <!-- Point of View Group -->
+            <div class="toggle-group">
+                <label>Point of View:</label>
+                <div class="button-group" id="pov">
+                    <button type="button" class="toggle-button" data-value="from-above">From Above</button>
+                    <button type="button" class="toggle-button" data-value="eye-level">Eye Level</button>
+                    <button type="button" class="toggle-button" data-value="side-view">Side View</button>
+                    <button type="button" class="toggle-button" data-value="corner-view">Corner View</button>
+                </div>
+            </div>
+            
+            <div class="generate-button-container">
+                <button class="generate-button" id="generate-button" type="button">Generate Mockup</button>    
+            </div>
+
         </div>
 
     </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
