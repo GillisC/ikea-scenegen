@@ -28,7 +28,7 @@ body {
 /* Wrapper for the login form */
 .login-wrapper {
     width: 100%;
-    max-width: 50vw;
+    max-width: 30vw;
     margin: 10rem auto; /* Center the form horizontally */
     padding: 20px;
     background-color: #f9f9f9;

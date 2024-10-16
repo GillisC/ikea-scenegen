@@ -9,6 +9,8 @@ from .backend.user_manager import Token
 app = Flask(__name__)
 app.secret_key = "this is super secret"
 app.permanent_session_lifetime = Token.LIFETIME_LONG
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Set SameSite to None
+app.config['SESSION_COOKIE_SECURE'] = True      # Ensure the cookie is only sent over HTTPS
 
 backend = BackendHandler()
 
@@ -19,37 +21,26 @@ client.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.before_request
 def before_request_handler():
-    # Do nothing for static resources
+    # Ignore static resources
     if request.endpoint == "static":
         return
 
-    # Check if user is logged in
+    # Retrieve user information from session
     g.token_id = session.get("token")
     g.user = backend.user_manager.get_user(g.token_id)
 
-    # Do not check if logged in on these paths
-    if request.path == "/register": 
+    # Allow access to the register page even if not logged in
+    if request.path == "/register":
         return
-    if request.path == "/forgotPassword":
-        return
-    if request.path == "/forgot-password-post":
-        return
-    if request.path == "/verifyEmail":
-        return
-    if request.path == "/newPassword":
-        return
-    # Usd in
+
+    # If user is logged in, redirect away from login page
     if g.user:
-        # Do not show login if already logged in
-        if request.path == "/login": 
+        if request.path == "/login":
             return redirect("/")
-        else:
-            return
-    # User is not logged in
+        return
     else:
-        if request.path == "/login": 
-            return
-        else:
+        # If not logged in and not on the login page, redirect to login
+        if request.path != "/login":
             return redirect("/login")
 
 
@@ -151,7 +142,7 @@ def handle_register():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect("/login")
+    return render_template("index.html")
 
 @app.route('/list-files', methods=['GET'])
 def get_files():
