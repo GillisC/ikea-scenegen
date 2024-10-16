@@ -2,6 +2,8 @@ import sqlite3
 import threading
 import os
 import shutil
+import datetime
+
 
 class DatabaseHandler:
     """
@@ -117,3 +119,13 @@ class DatabaseHandler:
             cursor = self.db.cursor()   
             cursor.execute(query, values)
             self.db.commit()
+
+        # Takes string date_string, for example '2023-01-17 10:42:08', and returns DateTime object
+    @staticmethod
+    def str_to_datetime(date_string):
+        return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+
+    # Takes DateTime object dt, returns string such as '2023-01-17 10:42:08'
+    @staticmethod
+    def datetime_to_str(dt):
+        return dt.strftime("%Y-%m-%d %H:%M:%S")

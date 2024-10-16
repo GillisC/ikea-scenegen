@@ -9,123 +9,176 @@
     
 </head>
 <body>
-    <h1 class="title-text">IKEA SceneGen - Mockup Generator</h1>
-
-    <div class="container">
-        <div class="image-box">
-            <img id="generated-image" src="{{ image_url }}">
-            <a href="{{ image_url }}" download="mockup_image.png" id="download-link">
-                <button class="download-button">Download</button>
-            </a>
-            <p class="status-text" id="no-image-text">No image generated yet.</p>
-            <div class="loading-bar-container">
-                <div id="loading-bar" class="loading-bar"></div>
+    
+    <!-- Header at the top of the page -->
+    <header>
+        <div class="header-bar">
+            <h1 class=title-text>IKEA SceneGen</h1>
+            <div class="logout-container">
+                <form action="/logout", method="post">
+                    <button class="logout-button">
+                        <img src="{{ url_for('static', filename='img/logout.png') }}" alt="Logout" class="logout-icon">
+                    </button>
+                </form>
             </div>
         </div>
-        
-        <div class="controls">
-            <div class="toggle-group">
-                <label>Map:</label>
-                <div id="map" style="width: 100%; height: 500px;"></div>
-                <script src="{{ url_for('static', filename='js/leaflet/leaflet.js') }}"></script>
-                <script src="{{ url_for('static', filename='js/map.js') }}"></script>
-            </div>
-            <div class="map-name">
-                <label id="countryName">Selected Country: None</label>
-            </div>
-            <div class="toggle-group">
-                <label>Style:</label> 
-                <div class="button-group" id="style">
-                    <button type="button" class="toggle-button" data-value="modern">Modern</button>
-                    <button type="button" class="toggle-button" data-value="traditional">Traditional</button>
-                    <button type="button" class="toggle-button" data-value="rustic">Rustic</button>
-                    <button type="button" class="toggle-button" data-value="industrial">Industrial</button>
-                </div>
-            </div>
-            
-            <div class="toggle-group">
-                <label>Season:</label>
-                <div class="button-group" id="season">
-                    <button type="button" class="toggle-button" data-value="summer">Summer</button>
-                    <button type="button" class="toggle-button" data-value="winter">Winter</button>
-                    <button type="button" class="toggle-button" data-value="spring">Spring</button>
-                    <button type="button" class="toggle-button" data-value="fall">Fall</button>
-                </div>
-            </div>
-
-            <div class="toggle-group">
-                <label>Time of day:</label>
-                <div class="button-group" id="time">
-                    <button type="button" class="toggle-button" data-value="morning">Morning</button>
-                    <button type="button" class="toggle-button" data-value="afternoon">Afternoon</button>
-                    <button type="button" class="toggle-button" data-value="evening">Evening</button>
-                    <button type="button" class="toggle-button" data-value="night">Night</button>
-                </div>
-            </div>
-
-            <!-- Feeling/Atmosphere Group -->
-            <div class="toggle-group">
-                <label>Feeling/Atmosphere:</label>
-                <div class="button-group" id="feeling">
-                    <button type="button" class="toggle-button" data-value="cozy">Cozy</button>
-                    <button type="button" class="toggle-button" data-value="warm">Warm</button>
-                    <button type="button" class="toggle-button" data-value="elegant">Elegant</button>
-                    <button type="button" class="toggle-button" data-value="bright">Bright</button>
-                </div>
-            </div>
-
-            <!-- Materials Group -->
-            <div class="toggle-group">
-                <label>Materials:</label>
-                <div class="button-group" id="materials">
-                    <button type="button" class="toggle-button" data-value="wood">Wood</button>
-                    <button type="button" class="toggle-button" data-value="metal">Metal</button>
-                    <button type="button" class="toggle-button" data-value="glass">Glass</button>
-                    <button type="button" class="toggle-button" data-value="stone">Stone</button>
-                </div>
-            </div>
-
-            <!-- Intended Audience Group -->
-            <div class="toggle-group">
-                <label>Intended Audience:</label>
-                <div class="button-group" id="audience">
-                    <button type="button" class="toggle-button" data-value="family">Family</button>
-                    <button type="button" class="toggle-button" data-value="single-person">Single Person</button>
-                    <button type="button" class="toggle-button" data-value="couples">Couples</button>
-                    <button type="button" class="toggle-button" data-value="students">Students</button>
-                </div>
-            </div>
-
-            <!-- Intended Market Group -->
-            <div class="toggle-group">
-                <label>Intended Market:</label>
-                <div class="button-group" id="market">
-                    <button type="button" class="toggle-button" data-value="scandinavian">Scandinavian</button>
-                    <button type="button" class="toggle-button" data-value="mediterranean">Mediterranean</button>
-                    <button type="button" class="toggle-button" data-value="balkan">Balkan</button>
-                    <button type="button" class="toggle-button" data-value="eastern european">Eastern European</button>
-                    <button type="button" class="toggle-button" data-value="alpine">Alpine</button>
-                </div>
-            </div>
-
-            <!-- Point of View Group -->
-            <div class="toggle-group">
-                <label>Point of View:</label>
-                <div class="button-group" id="pov">
-                    <button type="button" class="toggle-button" data-value="from-above">From Above</button>
-                    <button type="button" class="toggle-button" data-value="eye-level">Eye Level</button>
-                    <button type="button" class="toggle-button" data-value="side-view">Side View</button>
-                    <button type="button" class="toggle-button" data-value="corner-view">Corner View</button>
-                </div>
-            </div>
-            
-            <div class="generate-button-container">
-                <button class="generate-button" id="generate-button" type="button">Generate Mockup</button>    
-            </div>
-
-        </div>
-
+    </header>
+    
+    <div class="tabs-container">
+        <button class="tab-button active" onclick="openTab('generate')">Mockup Generator</button>
+        <button class="tab-button" onclick="openTab('saved')">Saved Images</button>
     </div>
+    
+    <!-- Mockup generation tab content -->
+    <div id="generate" class="tab-content active">
+        <div class="container">
+            <!-- The box where the image is loaded -->
+            <div class="image-box">
+                <img id="generated-image" src="{{ image_url }}">
+                <a href="{{ image_url }}" download="mockup_image.png" id="download-link">
+                    <button class="download-button">Download</button>
+                </a>
+                <p class="status-text" id="no-image-text">No image generated yet.</p>
+                <div class="loading-bar-container">
+                    <div id="loading-bar" class="loading-bar"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="toggle-group">
+                    <label>Map:</label>
+                    <div id="map" style="width: 100%; height: 500px;"></div>
+                    <script src="{{ url_for('static', filename='js/leaflet/leaflet.js') }}"></script>
+                    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+                </div>
+                <div class="map-name">
+                    <label id="countryName">Selected Country: None</label>
+                </div>
+
+                <div class="toggle-group">
+                    <label>Style:</label>
+                    <div class="button-group" id="style">
+                        <button type="button" class="toggle-button" data-value="modern">Modern</button>
+                        <button type="button" class="toggle-button" data-value="traditional">Traditional</button>
+                        <button type="button" class="toggle-button" data-value="rustic">Rustic</button>
+                        <button type="button" class="toggle-button" data-value="industrial">Industrial</button>
+                    </div>
+                </div>
+                
+                <div class="toggle-group">
+                    <label>Season:</label>
+                    <div class="button-group" id="season">
+                        <button type="button" class="toggle-button" data-value="summer">Summer</button>
+                        <button type="button" class="toggle-button" data-value="winter">Winter</button>
+                        <button type="button" class="toggle-button" data-value="spring">Spring</button>
+                        <button type="button" class="toggle-button" data-value="fall">Fall</button>
+                    </div>
+                </div>
+    
+                <div class="toggle-group">
+                    <label>Time of day:</label>
+                    <div class="button-group" id="time">
+                        <button type="button" class="toggle-button" data-value="morning">Morning</button>
+                        <button type="button" class="toggle-button" data-value="afternoon">Afternoon</button>
+                        <button type="button" class="toggle-button" data-value="evening">Evening</button>
+                        <button type="button" class="toggle-button" data-value="night">Night</button>
+                    </div>
+                </div>
+    
+                <!-- Feeling/Atmosphere Group -->
+                <div class="toggle-group">
+                    <label>Feeling/Atmosphere:</label>
+                    <div class="button-group" id="feeling">
+                        <button type="button" class="toggle-button" data-value="cozy">Cozy</button>
+                        <button type="button" class="toggle-button" data-value="warm">Warm</button>
+                        <button type="button" class="toggle-button" data-value="elegant">Elegant</button>
+                        <button type="button" class="toggle-button" data-value="bright">Bright</button>
+                    </div>
+                </div>
+    
+                <!-- Materials Group -->
+                <div class="toggle-group">
+                    <label>Materials:</label>
+                    <div class="button-group" id="materials">
+                        <button type="button" class="toggle-button" data-value="wood">Wood</button>
+                        <button type="button" class="toggle-button" data-value="metal">Metal</button>
+                        <button type="button" class="toggle-button" data-value="glass">Glass</button>
+                        <button type="button" class="toggle-button" data-value="stone">Stone</button>
+                    </div>
+                </div>
+    
+                <!-- Intended Audience Group -->
+                <div class="toggle-group">
+                    <label>Intended Audience:</label>
+                    <div class="button-group" id="audience">
+                        <button type="button" class="toggle-button" data-value="family">Family</button>
+                        <button type="button" class="toggle-button" data-value="single-person">Single Person</button>
+                        <button type="button" class="toggle-button" data-value="couples">Couples</button>
+                        <button type="button" class="toggle-button" data-value="students">Students</button>
+                    </div>
+                </div>
+    
+                <!-- Intended Market Group -->
+                <div class="toggle-group">
+                    <label>Intended Market:</label>
+                    <div class="button-group" id="market">
+                        <button type="button" class="toggle-button" data-value="scandinavian">Scandinavian</button>
+                        <button type="button" class="toggle-button" data-value="mediterranean">Mediterranean</button>
+                        <button type="button" class="toggle-button" data-value="balkan">Balkan</button>
+                        <button type="button" class="toggle-button" data-value="eastern european">Eastern European</button>
+                        <button type="button" class="toggle-button" data-value="alpine">Alpine</button>
+                    </div>
+                </div>
+    
+                <!-- Point of View Group -->
+                <div class="toggle-group">
+                    <label>Point of View:</label>
+                    <div class="button-group" id="pov">
+                        <button type="button" class="toggle-button" data-value="from-above">From Above</button>
+                        <button type="button" class="toggle-button" data-value="eye-level">Eye Level</button>
+                        <button type="button" class="toggle-button" data-value="side-view">Side View</button>
+                        <button type="button" class="toggle-button" data-value="corner-view">Corner View</button>
+                    </div>
+                </div>
+                
+                <div class="generate-button-container">
+                    <button class="generate-button" id="generate-button" type="button">Generate Mockup</button>    
+                </div>
+    
+            </div>
+    
+        </div>
+    </div>
+
+    <!-- Saved images tab content-->
+    <div id="saved" class="tab-content">
+        <h1>saved images here</h1>
+    </div>
+    
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function openTab(tabName) {
+        console.log("")
+        var i;
+        var tabContent = document.getElementsByClassName("tab-content");
+        var tabButtons = document.getElementsByClassName("tab-button");
+    
+        // Hide all tab content
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+            tabContent[i].classList.remove("active");
+        }
+    
+        // Remove active class from all buttons
+        for (i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+    
+        // Show the selected tab content and mark the button as active
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+    }
+    </script>
 </body>
 </html>

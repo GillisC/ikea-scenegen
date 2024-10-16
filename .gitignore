@@ -2,6 +2,7 @@
 project/__pycache__
 venv/
 project/backend/__pycache__/
+database_local.db
 .cache/
 __pycache__/
 .env
