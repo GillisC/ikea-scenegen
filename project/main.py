@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, redirect, session
+from flask import Flask, jsonify, render_template, request, redirect, session, g
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
@@ -16,6 +16,42 @@ backend = BackendHandler()
 load_dotenv()
 client = OpenAI()
 client.api_key = os.getenv("OPENAI_API_KEY")
+
+@app.before_request
+def before_request_handler():
+    # Do nothing for static resources
+    if request.endpoint == "static":
+        return
+
+    # Check if user is logged in
+    g.token_id = session.get("token")
+    g.user = backend.user_manager.get_user(g.token_id)
+
+    # Do not check if logged in on these paths
+    if request.path == "/register": 
+        return
+    if request.path == "/forgotPassword":
+        return
+    if request.path == "/forgot-password-post":
+        return
+    if request.path == "/verifyEmail":
+        return
+    if request.path == "/newPassword":
+        return
+    # Usd in
+    if g.user:
+        # Do not show login if already logged in
+        if request.path == "/login": 
+            return redirect("/")
+        else:
+            return
+    # User is not logged in
+    else:
+        if request.path == "/login": 
+            return
+        else:
+            return redirect("/login")
+
 
 def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str):
     base_prompt = f"""
@@ -117,6 +153,13 @@ def index():
 @app.route("/generate_image", methods = ["GET"])
 def home():
     return render_template("index.html")
+
+@app.route("/logout", methods = ["POST"])
+def handle_logout():
+    backend.user_manager.delete_token(g.token_id)
+    session.pop("token", None)
+    return redirect("/login")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
