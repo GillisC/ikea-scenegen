@@ -1,9 +1,16 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, session
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
+from .backend.backend_handler import BackendHandler
+from .backend.user_manager import Token
+
 
 app = Flask(__name__)
+app.secret_key = "this is super secret"
+app.permanent_session_lifetime = Token.LIFETIME_LONG
+
+backend = BackendHandler()
 
 # Set your OpenAI API key
 load_dotenv()
@@ -26,7 +33,7 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         """
     return base_prompt
 
-@app.route('/generate-image', methods=['POST'])
+@app.route('/generate_image', methods=['POST'])
 def generate_image():
     try:
         # Get the data from the JSON request
@@ -65,14 +72,58 @@ def generate_image():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+@app.route("/login", methods = ["GET"])
+def login():
+    return render_template("login.html")
+
+
+@app.route("/login", methods = ["POST"])
+def handle_login():
+    username = request.form["username"]
+    password = request.form["password"]
+    remember = request.form.get("remember")
+
+    user = backend.user_manager.find_user_with_name(username)
+    if user and user.has_password(password):
+        if remember:
+            session.permanent = True
+            session["token"] = backend.user_manager.create_token(user, Token.LIFETIME_LONG)
+        else:
+            session.permanent = False
+            session["token"] = backend.user_manager.create_token(user, Token.LIFETIME_SHORT)
+
+        return "success"
+
+    return "wrong username or password", 403
+
+@app.route("/register", methods = ["GET"])
+def register():
+    return render_template("register.html")
+
+@app.route("/register", methods = ["POST"])
+def handle_register():
+    username = request.form["username"]
+    password = request.form["password"]
+
+    user = backend.user_manager.find_user_with_name(username)
+    if user == None:
+        backend.user_manager.register(username, password)   
+        return "success"
+
+    return "username already exists", 403
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return redirect("/login")
 
 @app.route('/list-files', methods=['GET'])
 def get_files():
     return jsonify(os.listdir("./project/static/boundries"))
+
+@app.route("/generate_image", methods = ["GET"])
+def home():
+    return render_template("index.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
