@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="{{ url_for('static', filename="main.css") }}" rel="stylesheet", type="text/css">
+		<link href="{{ url_for('static', filename="login_register.css") }}" rel="stylesheet", type="text/css">
 		<title>Hello from Flask</title>
 		<script src="{{ url_for('static', filename="call_server.js")}}"></script>
 		<script src="{{ url_for('static', filename="scryptPbkdf.js")}}"></script>
@@ -11,31 +11,31 @@
 	</head>
 
 	<body>
-        <div class="reg-wrapper">
-            <h1>IKEA SceneGen</h1>
-            <h3 id="h3-marg">Register Account</h3>
-            <form id="register_form">
-                <div class="reg-container">
-                    <div class="login-wrapper">
-                        <label for="username"></label>
-                        <input type="text" placeholder="Mail" name="username" id="username" class="inv-input" autocomplete="username" autofocus required>    
-                    </div>
-                    <div class="login-wrapper">
-                        <label for="password"></label>
-                        <input type="password" placeholder="Password" id="password" class="inv-input" required>
-                    </div>
-                    <div class="login-wrapper">
-                        <label for="password"></label>
-                        <input type="password" placeholder="Retype Password" id="retype_password" class="inv-input" required>
-                    </div>
-                    <button class="login-btn" id="login-btn-marg" type="submit">Register</button>
-                </div>
-            </form>
-        </div>
+        <div class="login-wrapper">
+			<h3>Register Account</h3>
+			<form id="register_form">
+				<div class="form-group">
+					<label for="username" class="form-label">Email</label>
+					<input type="text" placeholder="Mail" name="username" id="username" class="form-input" autocomplete="username" autofocus required>
+				</div>
+		
+				<div class="form-group">
+					<label for="password" class="form-label">Password</label>
+					<input type="password" placeholder="Password" name="password" id="password" class="form-input" required>
+				</div>
+		
+				<div class="form-group">
+					<label for="retype_password" class="form-label">Retype Password</label>
+					<input type="password" placeholder="Retype Password" name="retype_password" id="retype_password" class="form-input" required>
+				</div>
+		
+				<button class="btn auth-btn" id="register-btn" type="submit">Register</button>
+			</form>
+		</div>
 
 
 		<script>
-			const button   = document.getElementById("login-btn-marg");
+			const button   = document.getElementById("register-btn");
 			const username = document.getElementById("username");
 			const password = document.getElementById("password");
 			const form     = document.getElementById("register_form");

@@ -2,7 +2,7 @@ import sqlite3
 import threading
 import os
 import shutil
-import datetime
+from datetime import datetime, timedelta
 
 
 class DatabaseHandler:
