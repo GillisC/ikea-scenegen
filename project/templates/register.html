@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="{{ url_for('static', filename="main.css") }}" rel="stylesheet", type="text/css">
+		<title>Hello from Flask</title>
+		<script src="{{ url_for('static', filename="call_server.js")}}"></script>
+		<script src="{{ url_for('static', filename="scryptPbkdf.js")}}"></script>
+		<script src="{{ url_for('static', filename="arraybuffer_hex.js")}}"></script>
+	</head>
+
+	<body>
+        <div class="reg-wrapper">
+            <h1>IKEA SceneGen</h1>
+            <h3 id="h3-marg">Register Account</h3>
+            <form id="register_form">
+                <div class="reg-container">
+                    <div class="login-wrapper">
+                        <label for="username"></label>
+                        <input type="text" placeholder="Mail" name="username" id="username" class="inv-input" autocomplete="username" autofocus required>    
+                    </div>
+                    <div class="login-wrapper">
+                        <label for="password"></label>
+                        <input type="password" placeholder="Password" id="password" class="inv-input" required>
+                    </div>
+                    <div class="login-wrapper">
+                        <label for="password"></label>
+                        <input type="password" placeholder="Retype Password" id="retype_password" class="inv-input" required>
+                    </div>
+                    <button class="login-btn" id="login-btn-marg" type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+
+
+		<script>
+			const button   = document.getElementById("login-btn-marg");
+			const username = document.getElementById("username");
+			const password = document.getElementById("password");
+			const form     = document.getElementById("register_form");
+			const retype   = document.getElementById("retype_password");
+
+			form.addEventListener("submit", function(e) {
+				e.preventDefault();
+				if(!form.checkValidity()) {
+					return;
+				}
+
+				button.disabled = true;
+
+				const salt = username.value;
+				scryptPbkdf.scrypt(password.value, salt, 64, {
+					N: 16384,
+					r: 8,
+					p: 2
+				}).then(
+					function(password_hash) {
+						const body = new FormData();
+						body.append("username", username.value);
+						body.append("password", hex(password_hash));
+						body.append("retype_password", retype.value);
+						
+						if (password.value != retype.value){
+							alert("Passwords do not match")
+							button.disabled = false;
+						}else{
+							call_server("POST", "/register", body, function(status, response){
+								if(status == 200) {
+									alert("Successfully registered. Redirecting...");
+									location.href = "/login";
+								} else {
+									alert("Error " + status + ": " + response);
+									button.disabled = false;
+								}
+						});
+					}
+					},
+					function(error) {
+						alert("Error: " + error);
+					}
+				);
+			});
+		</script>
+	</body>
+</html>
