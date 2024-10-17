@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IKEA SceneGen</title>
     <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="static/js/leaflet/leaflet.css" />
+    
 </head>
 <body>
     <h1 class="title-text">IKEA SceneGen - Mockup Generator</h1>
@@ -23,7 +25,16 @@
         
         <div class="controls">
             <div class="toggle-group">
-                <label>Style:</label>
+                <label>Map:</label>
+                <div id="map" style="width: 100%; height: 500px;"></div>
+                <script src="{{ url_for('static', filename='js/leaflet/leaflet.js') }}"></script>
+                <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+            </div>
+            <div class="map-name">
+                <label id="countryName">Selected Country: None</label>
+            </div>
+            <div class="toggle-group">
+                <label>Style:</label> 
                 <div class="button-group" id="style">
                     <button type="button" class="toggle-button" data-value="modern">Modern</button>
                     <button type="button" class="toggle-button" data-value="traditional">Traditional</button>

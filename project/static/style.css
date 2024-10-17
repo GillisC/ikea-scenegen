@@ -134,6 +134,13 @@ body {
     font-weight: bold;
 }
 
+.map-name label {
+    color: var(--off-white);
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
 .button-group {
     display: flex;
     flex-wrap: wrap;

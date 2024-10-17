@@ -10,7 +10,7 @@ load_dotenv()
 client = OpenAI()
 client.api_key = os.getenv("OPENAI_API_KEY")
 
-def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str):
+def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str, country: str):
     base_prompt = f"""
         Generate an image of a kitchen with the following parameters:
         - Style: {style}
@@ -21,7 +21,8 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         - Intended audience: {audience}
         - Intended market where the kitchen will be made for: {market}
         - Point of view: {pov}
-        If a field is empty simply ignore that constraint, and the image should not include any depiction of a human
+        - Let this country influence the design: {country}
+        If a field is empty simply ignore that constraint, and the image should not include any depiction of a human and should not contain any visible text.
         """
     return base_prompt
 
@@ -30,6 +31,7 @@ def generate_image():
     try:
         # Get the data from the JSON request
         data = request.get_json()
+        print(repr(data))
         
         # Extract the values sent from the client
         style = data.get('style')
@@ -40,9 +42,10 @@ def generate_image():
         audience = data.get('audience')
         market = data.get('market')
         pov = data.get('pov')
+        country = data.get("country")
 
         # Generate the prompt dynamically based on the input
-        prompt = generate_prompt(style, time, season, feeling, materials, audience, market, pov)
+        prompt = generate_prompt(style, time, season, feeling, materials, audience, market, pov, country)
         print(prompt)
         # Call DALL·E API to generate the image
         response = client.images.generate(
@@ -67,6 +70,9 @@ def generate_image():
 def index():
     return render_template('index.html')
 
+@app.route('/list-files', methods=['GET'])
+def get_files():
+    return jsonify(os.listdir("./project/static/boundries"))
 
 if __name__ == '__main__':
     app.run(debug=True)

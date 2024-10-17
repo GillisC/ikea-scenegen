@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             materials: materialsValues,
             audience: audienceValue,
             market: marketValue,
-            pov: povValue 
+            pov: povValue,
+            country: getSelectedCountry()
         }
 
         // Change the status text to "Generating image..."
