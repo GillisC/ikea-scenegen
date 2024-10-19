@@ -44,7 +44,7 @@ def before_request_handler():
             return redirect("/login")
 
 
-def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str):
+def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str, country: str):
     base_prompt = f"""
         Generate an image of a kitchen with the following parameters:
         - Style: {style}
@@ -60,8 +60,9 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         """
     return base_prompt
 
-@app.route('/generate_image', methods=['POST'])
+@app.route('/generate-image', methods=['POST'])
 def generate_image():
+    print("Starting to generate mockup...")
     try:
         # Get the data from the JSON request
         data = request.get_json()

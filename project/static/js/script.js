@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const audienceValue = document.querySelector('#audience .toggle-button.active')?.getAttribute('data-value');
         const marketValue = document.querySelector('#market .toggle-button.active')?.getAttribute('data-value');
         const povValue = document.querySelector('#pov .toggle-button.active')?.getAttribute('data-value');
-        
-        console.log("Prompt data gathered");
+        const selectedCountry = getSelectedCountry();
+
         const promptData = {
             style: styleValue,
             season: seasonValue,
@@ -61,8 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
             audience: audienceValue,
             market: marketValue,
             pov: povValue,
-            country: getSelectedCountry()
-        }
+            country: selectedCountry
+        };
+        console.log("Prompt data gathered: " + JSON.stringify(promptData, null, 2));
 
         // Change the status text to "Generating image..."
         const noImageText = document.getElementById('no-image-text');
