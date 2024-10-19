@@ -1,0 +1,132 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");
+
+:root {
+    /* Color palette */
+
+    /* Backgrounds */
+    --dark-slate: #1A1A2E;  /* Primary backgrounds */
+    --charcoal: #2E2E3A;    /* Section or card backgrounds */
+    --soft-gray: #3E4053;   /* Borders and lighter backgrounds */
+    --darker-charcoal: #272731;
+
+    /* Text colors */
+    --off-white: #EDEDED;   /* Primary text */
+    --cool-gray: #C5C6C7;   /* Secondary text, captions, subheadings */
+
+    /* IKEA colors */
+    --ikea-blue: #0058AB;
+    --ikea-yellow: #FBD914;
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--charcoal);
+}
+
+/* Wrapper for the login form */
+.login-wrapper {
+    width: 100%;
+    max-width: 30vw;
+    margin: 10rem auto; /* Center the form horizontally */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center text inside */
+}
+
+/* Headline */
+.login-wrapper h3 {
+    font-family: 'Noto Sans', sans-serif;
+    user-select: none;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Form groups for spacing */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left; /* Align labels to the left */
+}
+
+/* Labels */
+.form-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block; /* Force label to be on top of input */
+    user-select: none;
+}
+
+/* Form inputs */
+.form-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    margin-top: 5px;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    border-color: var(--ikea-blue);
+}
+
+/* Remember Me */
+.remember-me {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.remember-me label {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    margin-left: 5px;
+    user-select: none;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--off-white);
+    background-color: var(--charcoal);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: var(--soft-gray);
+}
+
+/* Register button styling */
+.register-link {
+    margin-top: 15px;
+}
+
+.register-link a {
+    display: inline-block;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.register-link a:hover {
+    background-color: #007bff;
+    color: white;
+}

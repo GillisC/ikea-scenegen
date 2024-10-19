@@ -7,6 +7,7 @@
     --dark-slate: #1A1A2E;  /* Primary backgrounds */
     --charcoal: #2E2E3A;    /* Section or card backgrounds */
     --soft-gray: #3E4053;   /* Borders and lighter backgrounds */
+    --darker-charcoal: #272731;
 
     /* Text colors */
     --off-white: #EDEDED;   /* Primary text */
@@ -34,9 +35,90 @@ body {
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 10px;
+    padding-top: 10rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     box-sizing: border-box;
     gap: 10px;
+
+}
+
+/* Header Styling */
+.header-bar {
+    width: 100%; /* Full width of the viewport */
+    height: 8rem; /* You can adjust this height as needed */
+    background-color: var(--dark-slate); /* Adjust color to fit the design */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center items vertically */
+    padding: 0 1rem; /* Add some padding to the sides */
+    position: fixed; /* Keeps the header fixed at the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensures it stays on top of other elements */
+    text-align: center;
+}
+
+.tabs-container {
+    position: absolute;
+    height: 2.5rem;
+    top: 5.5rem;
+    left: 0.1rem;
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+    padding-left: 20px;
+    z-index: 1001; /* Ensure tabs are above the header */
+}
+
+.tab-button {
+    padding: 10px 20px;
+    background-color: var(--darker-charcoal);
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 1rem 1rem 0 0; /* Rounded top edges */
+    transition: background-color 0.3s ease;
+    color: var(--off-white);
+    border-color: var(--cool-gray);
+    border-bottom: none;
+}
+
+.tab-button.active {
+    background-color: var(--charcoal); /* Active tab background */
+    border-bottom: none;
+}
+
+.tab-button:hover {
+    background-color: var(--cool-gray);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block; /* Only active tab content is shown */
+}
+
+.logout-button {
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color: var(--off-white);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 2rem;
+}
+
+.logout-icon {
+    position: relative;
+    width: 80%;
+    height: 80%;
 }
 
 .image-box {

@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="{{ url_for('static', filename="login_register.css") }}" rel="stylesheet", type="text/css">
+		<title>Hello from Flask</title>
+		<script src="{{ url_for('static', filename="call_server.js")}}"></script>
+		<script src="{{ url_for('static', filename="scryptPbkdf.js")}}"></script>
+		<script src="{{ url_for('static', filename="arraybuffer_hex.js")}}"></script>
+	</head>
+
+	<body>
+        <div class="login-wrapper">
+			<h3>Register Account</h3>
+			<form id="register_form">
+				<div class="form-group">
+					<label for="username" class="form-label">Email</label>
+					<input type="text" placeholder="Mail" name="username" id="username" class="form-input" autocomplete="username" autofocus required>
+				</div>
+		
+				<div class="form-group">
+					<label for="password" class="form-label">Password</label>
+					<input type="password" placeholder="Password" name="password" id="password" class="form-input" required>
+				</div>
+		
+				<div class="form-group">
+					<label for="retype_password" class="form-label">Retype Password</label>
+					<input type="password" placeholder="Retype Password" name="retype_password" id="retype_password" class="form-input" required>
+				</div>
+		
+				<button class="btn auth-btn" id="register-btn" type="submit">Register</button>
+			</form>
+		</div>
+
+
+		<script>
+			const button   = document.getElementById("register-btn");
+			const username = document.getElementById("username");
+			const password = document.getElementById("password");
+			const form     = document.getElementById("register_form");
+			const retype   = document.getElementById("retype_password");
+
+			form.addEventListener("submit", function(e) {
+				e.preventDefault();
+				if(!form.checkValidity()) {
+					return;
+				}
+
+				button.disabled = true;
+
+				const salt = username.value;
+				scryptPbkdf.scrypt(password.value, salt, 64, {
+					N: 16384,
+					r: 8,
+					p: 2
+				}).then(
+					function(password_hash) {
+						const body = new FormData();
+						body.append("username", username.value);
+						body.append("password", hex(password_hash));
+						body.append("retype_password", retype.value);
+						
+						if (password.value != retype.value){
+							alert("Passwords do not match")
+							button.disabled = false;
+						}else{
+							call_server("POST", "/register", body, function(status, response){
+								if(status == 200) {
+									alert("Successfully registered. Redirecting...");
+									location.href = "/login";
+								} else {
+									alert("Error " + status + ": " + response);
+									button.disabled = false;
+								}
+						});
+					}
+					},
+					function(error) {
+						alert("Error: " + error);
+					}
+				);
+			});
+		</script>
+	</body>
+</html>
