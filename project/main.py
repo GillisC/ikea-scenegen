@@ -160,5 +160,22 @@ def handle_logout():
     return redirect("/login")
 
 
+@app.route('/test-generate-image', methods=['POST'])
+def test_generate_image():
+    print("Starting to generate mockup...")
+    try:
+        random_img_url = "https://picsum.photos/1024"
+        user = backend.user_manager.get_user(g.token_id)
+        query = """INSERT INTO RecentImages (user_id, image_url, num) VALUES (?, ?, ?)"""
+        backend.db_handler.insert_query(query, (user.id, random_img_url, 1))
+        
+        # Return the image URL in the response as JSON
+        return jsonify({'image_url': random_img_url})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

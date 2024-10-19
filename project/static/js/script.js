@@ -40,8 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // This will run when the user presses the generate button
     document.getElementById('generate-button').addEventListener('click', function() {
+        const testing = true;
+
         console.log("Generate button clicked");
-        
         const styleValue = document.querySelector('#style .toggle-button.active')?.getAttribute('data-value');
         const seasonValue = document.querySelector('#season .toggle-button.active')?.getAttribute('data-value');
         const timeValue = document.querySelector('#time .toggle-button.active')?.getAttribute('data-value');
@@ -80,45 +81,87 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingBar.style.animation = ''; 
         }, 10); 
 
-            
-        fetch('/generate-image', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(promptData), // Send promptData as JSON
-        })
-        .then(response => {
-            console.log("Response from server:", response);
-            return response.json()
-        })
-        .then(data => {
-            console.log("Parsed JSON data:", data);
-            if (data.image_url) {
-                loadingBarContainer.style.display = 'none';
-                console.log("Image URL received:", data.image_url);
+        if (testing) {
+            // Used for testing the frontend, database interactions without needing to send an api request
+            console.log("Not sending a real api request, just testing");
+            fetch('/test-generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(promptData), // Send promptData as JSON
+            })
+            .then(response => {
+                console.log("Response from server:", response);
+                return response.json()
+            })
+            .then(data => {
+                console.log("Parsed JSON data:", data);
+                if (data.image_url) {
+                    loadingBarContainer.style.display = 'none';
+                    console.log("Image URL received:", data.image_url);
 
-                const imageElement = document.getElementById('generated-image');
-                const noImageText = document.getElementById('no-image-text');
-                const imageLink = document.getElementById('download-link');
+                    const imageElement = document.getElementById('generated-image');
+                    const noImageText = document.getElementById('no-image-text');
+                    const imageLink = document.getElementById('download-link');
 
-                if (imageElement && data.image_url) {
-                    imageElement.src = data.image_url; // Set the image source to the new image URL
-                    imageLink.href = data.image_url; // Set the download url aswell
+                    if (imageElement && data.image_url) {
+                        imageElement.src = data.image_url; // Set the image source to the new image URL
+                        imageLink.href = data.image_url; // Set the download url aswell
 
-                    if (noImageText) {
-                        noImageText.style.display = 'none';
+                        if (noImageText) {
+                            noImageText.style.display = 'none';
+                        }
                     }
+                    
+                } else if (data.error) {
+                    console.error('Error:', data.error);
                 }
-                
-            } else if (data.error) {
-                console.error('Error:', data.error);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        } else {
+            fetch('/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(promptData), // Send promptData as JSON
+            })
+            .then(response => {
+                console.log("Response from server:", response);
+                return response.json()
+            })
+            .then(data => {
+                console.log("Parsed JSON data:", data);
+                if (data.image_url) {
+                    loadingBarContainer.style.display = 'none';
+                    console.log("Image URL received:", data.image_url);
+
+                    const imageElement = document.getElementById('generated-image');
+                    const noImageText = document.getElementById('no-image-text');
+                    const imageLink = document.getElementById('download-link');
+
+                    if (imageElement && data.image_url) {
+                        imageElement.src = data.image_url; // Set the image source to the new image URL
+                        imageLink.href = data.image_url; // Set the download url aswell
+
+                        if (noImageText) {
+                            noImageText.style.display = 'none';
+                        }
+                    }
+                } else if (data.error) {
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
     });
 });
+
 
 

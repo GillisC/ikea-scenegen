@@ -69,7 +69,27 @@ class DatabaseHandler:
                 PRIMARY KEY (user_id, image_url)
             );
             """,
-            
+            """
+            CREATE TABLE IF NOT EXISTS RecentImages(
+                user_id TEXT NOT NULL,
+                image_url TEXT NOT NULL,
+                num INTEGER NOT NULL,
+                FOREIGN KEY(user_id) REFERENCES Users(id)
+                PRIMARY KEY (user_id, num)
+            );
+            """,
+            """
+            CREATE TRIGGER IF NOT EXISTS maintain_recent_images
+            AFTER INSERT ON RecentImages
+            BEGIN
+                UPDATE RecentImages
+                SET num = num + 1
+                WHERE user_id = NEW.user_id AND num <= 20 AND NEW.image_url ;
+
+                DELETE FROM RecentImages
+                WHERE user_id = NEW.user_id AND num > 20;
+            END;
+            """,
         ]
         with self.lock:
             cursor = self.db.cursor()
@@ -129,3 +149,4 @@ class DatabaseHandler:
     @staticmethod
     def datetime_to_str(dt):
         return dt.strftime("%Y-%m-%d %H:%M:%S")
+
