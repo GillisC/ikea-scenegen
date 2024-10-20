@@ -152,7 +152,17 @@
 
     <!-- Saved images tab content-->
     <div id="saved" class="tab-content">
-        <h1>saved images here</h1>
+        <div class="container">
+
+            <div class="recents-container">
+                {% if recent_images %}
+                    {% for image in recent_images %}
+                        <img src="data:image/jpeg;base64,{{ image }}" alt="Image"/>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <h1>HELLO IS ANYONE SEEING THIS</h1>
+        </div>
     </div>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

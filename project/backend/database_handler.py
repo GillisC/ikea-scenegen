@@ -72,7 +72,7 @@ class DatabaseHandler:
             """
             CREATE TABLE IF NOT EXISTS RecentImages(
                 user_id TEXT NOT NULL,
-                image_url TEXT NOT NULL,
+                image BLOB NOT NULL,
                 num INTEGER NOT NULL,
                 FOREIGN KEY(user_id) REFERENCES Users(id)
                 PRIMARY KEY (user_id, num)
@@ -84,7 +84,7 @@ class DatabaseHandler:
             BEGIN
                 UPDATE RecentImages
                 SET num = num + 1
-                WHERE user_id = NEW.user_id AND num <= 20 AND NEW.image_url ;
+                WHERE user_id = NEW.user_id AND num <= 20;
 
                 DELETE FROM RecentImages
                 WHERE user_id = NEW.user_id AND num > 20;
@@ -113,16 +113,17 @@ class DatabaseHandler:
         Returns:
         dict: A dictionary containing the row(s) information.
         """
+        try:
+            with self.lock:
+                cursor = self.db.cursor()
+                cursor.execute(query, values)
 
-        with self.lock:
-
-            cursor = self.db.cursor()
-            cursor.execute(query, values)
-
-            if return_one:
-                return cursor.fetchone()
-            else:
-                return cursor.fetchall()
+                if return_one:
+                    return cursor.fetchone()
+                else:
+                    return cursor.fetchall()
+        except Exception as e:
+            print(f"Error when inserting: {e}")
 
     def insert_query(self, query: str, values: tuple):
         """
@@ -135,10 +136,14 @@ class DatabaseHandler:
         Returns:
         None
         """
-        with self.lock:
-            cursor = self.db.cursor()   
-            cursor.execute(query, values)
-            self.db.commit()
+        try:
+            with self.lock:
+                cursor = self.db.cursor()   
+                cursor.execute(query, values)
+                self.db.commit()
+        
+        except Exception as e:
+            print(f"Error when inserting: {e}")
 
         # Takes string date_string, for example '2023-01-17 10:42:08', and returns DateTime object
     @staticmethod

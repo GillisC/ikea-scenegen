@@ -143,15 +143,14 @@ def handle_register():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    user = backend.user_manager.get_user(g.token_id)
+    recent_images = backend.images_manager.get_recent_images(user.id)
+    return render_template("index.html", recent_images=recent_images)
 
 @app.route('/list-files', methods=['GET'])
 def get_files():
     return jsonify(os.listdir("./project/static/boundries"))
 
-@app.route("/generate_image", methods = ["GET"])
-def home():
-    return render_template("index.html")
 
 @app.route("/logout", methods = ["POST"])
 def handle_logout():
@@ -162,12 +161,11 @@ def handle_logout():
 
 @app.route('/test-generate-image', methods=['POST'])
 def test_generate_image():
-    print("Starting to generate mockup...")
+    """Used to test the backend with stock images"""
     try:
         random_img_url = "https://picsum.photos/1024"
         user = backend.user_manager.get_user(g.token_id)
-        query = """INSERT INTO RecentImages (user_id, image_url, num) VALUES (?, ?, ?)"""
-        backend.db_handler.insert_query(query, (user.id, random_img_url, 1))
+        backend.images_manager.store_image(user.id, random_img_url)
         
         # Return the image URL in the response as JSON
         return jsonify({'image_url': random_img_url})
