@@ -16,6 +16,7 @@
     /* IKEA colors */
     --ikea-blue: #0058AB;
     --ikea-yellow: #FBD914;
+    --ikea-yellow-hover: #E3C210;
 }
 
 body {
@@ -31,6 +32,13 @@ body {
     font-size: 2.5em;
     color: var(--off-white);
 }
+
+.small-title {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--off-white);
+}
+
 .container {
     display: flex;
     width: 100%;
@@ -312,4 +320,62 @@ button:hover {
 .generate-button:active {
     transform: scale(0.98); 
     transition: transform 0.1s ease;
+}
+
+/* Recent images section */
+.saved-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 10rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+    gap: 10px;
+
+}
+
+.recents-container {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    border-radius: 1rem;
+    border: 0.2rem solid var(--cool-gray);
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--ikea-yellow) var(--ikea-blue);
+}
+
+/* webkit doesnt work with firefox :( */
+.recents-container::-webkit-scrollbar {
+    background-color: transparent;
+    height: 0.5rem;
+}
+
+.recents-container::-webkit-scrollbar-thumb {
+    background-color: var(--ikea-yellow);
+    border-radius: 0.25rem;
+}
+
+.recents-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--ikea-yellow-hover);
+    border-radius: 0.25rem;
+}
+
+.recent-image-card {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.recent-image-card img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 1rem;
 }

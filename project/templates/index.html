@@ -152,16 +152,18 @@
 
     <!-- Saved images tab content-->
     <div id="saved" class="tab-content">
-        <div class="container">
+        <div class="saved-container">
 
+            <h3 class="small-title">Recently generated</h1>
             <div class="recents-container">
                 {% if recent_images %}
                     {% for image in recent_images %}
+                    <div class="recent-image-card">
                         <img src="data:image/jpeg;base64,{{ image }}" alt="Image"/>
+                    </div>
                     {% endfor %}
                 {% endif %}
             </div>
-            <h1>HELLO IS ANYONE SEEING THIS</h1>
         </div>
     </div>
     
