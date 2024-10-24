@@ -4,6 +4,10 @@ import os
 from openai import OpenAI
 from .backend.backend_handler import BackendHandler
 from .backend.user_manager import Token
+import requests
+from PIL import Image
+from io import BytesIO
+
 
 
 app = Flask(__name__)
@@ -18,6 +22,8 @@ backend = BackendHandler()
 load_dotenv()
 client = OpenAI()
 client.api_key = os.getenv("OPENAI_API_KEY")
+
+last_image_url = None
 
 @app.before_request
 def before_request_handler():
@@ -60,6 +66,7 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         """
     return base_prompt
 
+
 @app.route('/generate-image', methods=['POST'])
 def generate_image():
     print("Starting to generate mockup...")
@@ -82,7 +89,21 @@ def generate_image():
         # Generate the prompt dynamically based on the input
         prompt = generate_prompt(style, time, season, feeling, materials, audience, market, pov, country)
         print(prompt)
-        # Call DALL·E API to generate the image
+       
+        image_url = generate_image_from_prompt(prompt)
+        
+        # Return the image URL in the response as JSON
+        return jsonify({'image_url': image_url})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+def generate_image_from_prompt(prompt): 
+    global last_image_url
+
+    try: 
+    # Call DALL·E API to generate the image
         response = client.images.generate(
             model="dall-e-3",
             prompt=prompt,
@@ -93,7 +114,89 @@ def generate_image():
         
         # Extract the image URL from the response
         image_url = response.data[0].url
+        last_image_url = image_url
+
+        return image_url
+    except Exception as e: 
+        raise RuntimeError(f"Failed to generate image: {str(e)}")
+
+
+def convert_image_url_to_PNG(image_url):
+    try:
+        # Download the image
+        response = requests.get(image_url)
+        response.raise_for_status()  # Check if the request was successful
+        image = Image.open(BytesIO(response.content))
+
+        # Ensure the image is square
+        width, height = image.size
+        if width != height:
+            new_size = max(width, height)
+            new_image = Image.new("RGBA", (new_size, new_size), (0, 0, 0, 0))
+            new_image.paste(image, ((new_size - width) // 2, (new_size - height) // 2))
+            image = new_image
+
+        # Convert image to RGBA format
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+
+        # Convert image to PNG format
+        buffered = BytesIO()
+        image.save(buffered, format="PNG")
+        png_image_data = buffered.getvalue()
+
+        # Ensure the image is less than 4MB
+        max_size = 4 * 1024 * 1024  # 4MB
+        if len(png_image_data) > max_size:
+            raise RuntimeError("Image size exceeds 4MB limit")
+
+        return png_image_data
+    except Exception as e:
+        print(f"Error in convert_image_url_to_PNG: {str(e)}")
+        raise RuntimeError(f"Failed to convert image to PNG: {str(e)}")
+
+
+
+def edit_image_with_prompt(png_image, prompt):
+    try:
+        # Call DALL·E 2 to edit the image
+        response = client.images.edit(
+            image=png_image,
+            prompt=prompt,
+            size="1024x1024",
+            n=1,  # Number of images
+            model='dall-e-2',
+            response_format="url"  # Ensure the response format is URL
+        )
         
+        # Extract the edited image URL from the response
+        edited_image_url = response.data[0].url
+        return edited_image_url
+    except Exception as e:
+        print(f"Error in edit_image_with_prompt: {str(e)}")
+        raise RuntimeError(f"Failed to edit image: {str(e)}")
+
+
+@app.route('/submit-input', methods=['POST'])
+def submit_input():
+    global last_image_url
+    try:
+        # Get the data from the JSON request
+        data = request.get_json()
+        user_input = data.get('user_input')
+        print(f"Received user input: {user_input}")
+    
+        if last_image_url:
+            prompt = user_input
+        else:
+            print("no image yet")
+
+        png_image = convert_image_url_to_PNG(last_image_url)
+        image_url = edit_image_with_prompt(png_image, prompt)
+        last_image_url = image_url
+
+        print("edited image url generated")
+
         # Return the image URL in the response as JSON
         return jsonify({'image_url': image_url})
 

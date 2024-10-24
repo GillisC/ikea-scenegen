@@ -185,12 +185,27 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
+    width: 120px; 
+    display: none;
+}
+
+.edit-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 120px; 
     display: none;
 }
 
 .image-box:hover .download-button {
     display: block;
 }
+
+
+.image-box:hover .edit-button {
+    display: block;
+}
+
 
 .controls {
     width: 40%;
@@ -312,4 +327,28 @@ button:hover {
 .generate-button:active {
     transform: scale(0.98); 
     transition: transform 0.1s ease;
+}
+
+.dialog {
+    display: none;
+    position: relative;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    align-self: flex-end;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#edit-dialog textarea {
+    margin-bottom: 10px;
 }
