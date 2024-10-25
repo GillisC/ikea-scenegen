@@ -16,6 +16,7 @@
     /* IKEA colors */
     --ikea-blue: #0058AB;
     --ikea-yellow: #FBD914;
+    --ikea-yellow-hover: #E3C210;
 }
 
 body {
@@ -31,16 +32,43 @@ body {
     font-size: 2.5em;
     color: var(--off-white);
 }
+
+.small-title {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--off-white);
+    text-align: center;
+}
+
+
+.small-title::after {
+    content: '';
+    display: block;
+    width: 30rem; 
+    height: 0.2rem; 
+    background-color: var(--ikea-yellow); 
+    margin: 10px auto 0;
+    border-radius: 5px; 
+}
+
 .container {
+    position: relative;
     display: flex;
     width: 100%;
-    justify-content: space-between;
-    padding-top: 10rem;
+    justify-content: center;
+    padding-top: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
     box-sizing: border-box;
     gap: 10px;
 
+}
+
+.map-display {
+    margin-top: 500px;
+    align-content: center;
+    width: 500px; 
+    height: 500px;
 }
 
 /* Header Styling */
@@ -52,7 +80,6 @@ body {
     justify-content: center;
     align-items: center; /* Center items vertically */
     padding: 0 1rem; /* Add some padding to the sides */
-    position: fixed; /* Keeps the header fixed at the top */
     top: 0;
     left: 0;
     z-index: 1000; /* Ensures it stays on top of other elements */
@@ -123,7 +150,9 @@ body {
 
 .image-box {
     position: relative;
-    width: 60%;
+    max-width: 1024px;
+    width: 40%;
+    height: auto;
     padding: 4px;
     display: flex;
     justify-content: center;
@@ -180,20 +209,51 @@ body {
     }
 }
 
+.generate-button-container-top {
+    /* The top right buttons */
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    display: flex;
+    gap: 0.2rem;
+}
 
 .download-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--charcoal);
+    cursor: pointer;
+    color: var(--off-white);
+    border-radius: 8px;
     display: none;
 }
 
+.save-image-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--charcoal);
+    cursor: pointer;
+    color: var(--off-white);
+    border-radius: 8px;
+    display: none;
+}
+
+.download-button:hover,
+.save-image-button:hover {
+    background-color: var(--soft-gray);    
+}
+
+.image-box:hover .save-image-button,
 .image-box:hover .download-button {
     display: block;
 }
 
 .controls {
     width: 40%;
+    height: 40rem;
+    max-height: 1024px;
     display: flex;
     flex-direction: column;
     justify-self: start;
@@ -202,12 +262,14 @@ body {
     border: 4px solid var(--cool-gray);
     background-color: var(--soft-gray);
     border-radius: 10px;
+    overflow: scroll;
 }
 
 .toggle-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    
 }
 
 .toggle-group label {
@@ -230,25 +292,26 @@ body {
 }
 
 .toggle-button {
-    padding: 10px 15px;
+    padding: 0.5rem 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
     background-color: var(--charcoal);
     cursor: pointer;
     color: var(--off-white);
     border-radius: 8px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .toggle-button.active {
-    background-color: var(--ikea-yellow);
-    color: var(--ikea-blue);
-    border-color: var(--ikea-blue);
+    background-color: var(--ikea-blue);
+    color: var(--ikea-yellow);
+    border-color: var(--ikea-yellow);
 }
 
 .toggle-button:hover {
-    background-color: var(--ikea-yellow);
+    background-color: var(--ikea-yellow-hover);
     color: var(--ikea-blue);
 }
-
 
 .form-box {
     flex: 1;
@@ -273,7 +336,7 @@ input[type="text"] {
     font-size: 16px;
 }
 
-button {
+.parameter-button {
     padding: 10px;
     border: 2px solid #0058AB;
     background-color: #FBD914;
@@ -283,7 +346,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.parameter-button:hover {
     background-color: #ffda0b;
 }
 
@@ -293,6 +356,8 @@ button:hover {
 
 .generate-button {
     width: 200px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1rem;
     position: relative;
     border: 2px solid #0058AB;
     background-color: #FBD914;
@@ -312,4 +377,133 @@ button:hover {
 .generate-button:active {
     transform: scale(0.98); 
     transition: transform 0.1s ease;
+}
+
+/* Recent images section */
+.saved-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+.recents-container {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--ikea-yellow) var(--ikea-blue);
+}
+
+.button-container {
+    position: absolute;
+    top: 0.1rem;
+    right: 0.1rem;
+    display: flex;
+    gap: 0.2rem;
+}
+
+.star-save-button, .share-button {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--ikea-yellow);
+}
+
+
+.star-save-button.filled {
+    color: var(--ikea-yellow);
+}
+
+.star-save-button.unfilled {
+    color: var(--cool-gray);
+}
+
+/* webkit doesnt work with firefox :( */
+.recents-container::-webkit-scrollbar {
+    background-color: transparent;
+    height: 0.5rem;
+}
+
+.recents-container::-webkit-scrollbar-thumb {
+    background-color: var(--ikea-yellow);
+    border-radius: 0.25rem;
+}
+
+.recents-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--ikea-yellow-hover);
+    border-radius: 0.25rem;
+}
+
+.recent-image-card {
+    position: relative;
+    display: inline-block;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.recent-image-card img {
+    width: 12rem;
+    height: 12rem;
+    border-radius: 1rem;
+}
+
+
+.recent-image-card:hover .button-container .star-save-button,
+.recent-image-card:hover .button-container .share-button {
+    display: block;
+}
+
+/* Share modal */
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+/* Modal Content (the box) */
+.modal-content {
+    background-color: white;
+    margin: 15% auto; /* Center the modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px; /* Specify the width of the modal */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button (X) */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

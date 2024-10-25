@@ -1,4 +1,5 @@
 from project.backend.database_handler import DatabaseHandler
+from project.backend.images_handler import ImagesManager
 from project.backend.user_manager import UserManager
 
 class BackendHandler:
@@ -19,3 +20,7 @@ class BackendHandler:
 
     def setup(self):
         self.user_manager = UserManager(self.db_handler)
+        self.images_manager = ImagesManager(self.db_handler)
+
+    
+    

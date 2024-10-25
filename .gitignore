@@ -6,3 +6,4 @@ database_local.db
 .cache/
 __pycache__/
 .env
+project/static/img/downloads/

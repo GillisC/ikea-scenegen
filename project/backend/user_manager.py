@@ -139,6 +139,13 @@ class UserManager:
                 (token_id,)
             )
 
+    
+    def get_all_usernames(self):
+        result = self.db_handler.select_query("SELECT id, username FROM Users")
+        usernames = [{"id": row[0], "username": row[1]} for row in result]
+        
+        return usernames
+
 
 class User:
     """
