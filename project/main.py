@@ -62,7 +62,9 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
 
 @app.route('/generate-image', methods=['POST'])
 def generate_image():
+    user = backend.user_manager.get_user(g.token_id)
     print("Starting to generate mockup...")
+
     try:
         # Get the data from the JSON request
         data = request.get_json()
@@ -93,7 +95,8 @@ def generate_image():
         
         # Extract the image URL from the response
         image_url = response.data[0].url
-        
+        # Store the generated image in recently generated section
+        backend.images_manager.store_recent_image(user.id, image_url)
         # Return the image URL in the response as JSON
         return jsonify({'image_url': image_url})
 
@@ -144,8 +147,14 @@ def handle_register():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     user = backend.user_manager.get_user(g.token_id)
+
     recent_images = backend.images_manager.get_recent_images(user.id)
-    return render_template("index.html", recent_images=recent_images)
+    saved_images = backend.images_manager.get_saved_images(user.id)
+    #shared_images = backend.images_manager.get_shared_images(user.id)
+
+    shared_images = None
+
+    return render_template("index.html", recent_images=recent_images, saved_images=saved_images, shared_images=shared_images)
 
 @app.route('/list-files', methods=['GET'])
 def get_files():
@@ -158,6 +167,13 @@ def handle_logout():
     session.pop("token", None)
     return redirect("/login")
 
+@app.route("/save-image", methods = ["POST"])
+def save_image():
+    image_id = request.get_json().get("image_id")
+    user = backend.user_manager.get_user(g.token_id)
+    backend.images_manager.toggle_save(user.id, image_id)
+    return "success"
+
 
 @app.route('/test-generate-image', methods=['POST'])
 def test_generate_image():
@@ -165,13 +181,33 @@ def test_generate_image():
     try:
         random_img_url = "https://picsum.photos/1024"
         user = backend.user_manager.get_user(g.token_id)
-        backend.images_manager.store_image(user.id, random_img_url)
+        backend.images_manager.store_recent_image(user.id, random_img_url)
         
         # Return the image URL in the response as JSON
         return jsonify({'image_url': random_img_url})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route("/get_all_users", methods=["POST"])
+def get_all_users():
+    all_usernames = backend.user_manager.get_all_usernames()
+    print(f"length: {len(all_usernames)}")
+    print(f"All users usernames: {all_usernames}")
+    return jsonify(all_usernames)
+
+
+@app.route("/share-image", methods=["POST"])
+def share_image():
+    user = backend.user_manager.get_user(g.token_id)
+    receiver_user_id = request.get_json().get("receiver_user_id")
+    image_id = request.get_json().get("selectedImageId")
+    print(receiver_user_id, image_id)
+
+    backend.images_manager.share_image(user.id, receiver_user_id, image_id)
+    return "success"
+
 
 
 

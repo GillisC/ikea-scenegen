@@ -44,6 +44,19 @@ class DatabaseHandler:
         
         print("Setting up tables")
         
+            #"""
+            #DROP TABLE IF EXISTS Images;
+            #""",
+            #""
+            #ROP TABLE IF EXISTS RecentImages;
+            #"",
+            #"""
+            #DROP TABLE IF EXISTS SavedImages;
+            #""",
+            #"""
+            #ROP TABLE IF EXISTS SharedImages;
+            #""",
+
         queries = [
             """
             CREATE TABLE IF NOT EXISTS Users (
@@ -62,6 +75,12 @@ class DatabaseHandler:
             );
             """,
             """
+            CREATE TABLE IF NOT EXISTS Images(
+                image_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                image BLOB NOT NULL
+            );
+            """,
+            """
             CREATE TABLE IF NOT EXISTS FavoriteImages(
                 user_id TEXT NOT NULL,
                 image_url TEXT NOT NULL,
@@ -72,10 +91,11 @@ class DatabaseHandler:
             """
             CREATE TABLE IF NOT EXISTS RecentImages(
                 user_id TEXT NOT NULL,
-                image BLOB NOT NULL,
+                image_id INTEGER NOT NULL,
                 num INTEGER NOT NULL,
                 FOREIGN KEY(user_id) REFERENCES Users(id)
-                PRIMARY KEY (user_id, num)
+                FOREIGN KEY(image_id) REFERENCES Images(image_id)
+                PRIMARY KEY (user_id, image_id)
             );
             """,
             """
@@ -84,11 +104,31 @@ class DatabaseHandler:
             BEGIN
                 UPDATE RecentImages
                 SET num = num + 1
-                WHERE user_id = NEW.user_id AND num <= 20;
+                WHERE user_id = NEW.user_id AND num <= 21;
 
                 DELETE FROM RecentImages
-                WHERE user_id = NEW.user_id AND num > 20;
+                WHERE user_id = NEW.user_id AND num > 21;
             END;
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS SavedImages(
+                user_id TEXT NOT NULL,
+                image_id INTEGER NOT NULL,
+                FOREIGN KEY(user_id) REFERENCES Users(id)
+                FOREIGN KEY(image_id) REFERENCES Images(image_id)
+                PRIMARY KEY (user_id, image_id)
+            );
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS SharedImages(
+                sender_user_id TEXT NOT NULL,
+                receiver_user_id TEXT NOT NULL,
+                image_id INTEGER NOT NULL,
+                FOREIGN KEY (sender_user_id) REFERENCES Users(id)
+                FOREIGN KEY (receiver_user_id) REFERENCES Users(id)
+                FOREIGN KEY (image_id) REFERENCES Images(image_id) 
+                PRIMARY KEY (sender_user_id, receiver_user_id, image_id)
+            );
             """,
         ]
         with self.lock:
@@ -145,7 +185,51 @@ class DatabaseHandler:
         except Exception as e:
             print(f"Error when inserting: {e}")
 
-        # Takes string date_string, for example '2023-01-17 10:42:08', and returns DateTime object
+
+    def delete_query(self, query: str, values: tuple):
+        """
+        Performs a delete query on the database.
+
+        Parameters:
+        query (str): The query to be executed.
+        values (tuple): The values to be used in the query.
+
+        Returns:
+        None
+        """
+        try:
+            with self.lock:
+                cursor = self.db.cursor()   
+                cursor.execute(query, values)
+                self.db.commit()
+
+        except Exception as e:
+            print(f"Error when deleting: {e}")
+
+
+    def get_last_image_inserted(self):
+        """
+        Performs a select query on the database.
+
+        Returns:
+        dict: The image id of the last image inserted into the Images table.
+        """
+        print("we are here")
+        try:
+            with self.lock:
+                cursor = self.db.cursor()
+                query = "SELECT last_insert_rowid() AS image_id;"
+                cursor.execute(query)
+
+                last_inserted = cursor.fetchone()
+                if last_inserted:
+                    print(f"image_id: {last_inserted['image_id']}")
+                    return last_inserted["image_id"]
+                
+        except Exception as e:
+            print(f"Error when trying to get last image_id: {e}")
+
+    # Takes string date_string, for example '2023-01-17 10:42:08', and returns DateTime object
     @staticmethod
     def str_to_datetime(date_string):
         return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
@@ -155,3 +239,5 @@ class DatabaseHandler:
     def datetime_to_str(dt):
         return dt.strftime("%Y-%m-%d %H:%M:%S")
 
+
+    
