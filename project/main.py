@@ -7,7 +7,7 @@ from .backend.user_manager import Token
 import requests
 from PIL import Image
 from io import BytesIO
-
+from transformers import BlipProcessor, BlipForConditionalGeneration
 
 
 app = Flask(__name__)
@@ -23,7 +23,23 @@ load_dotenv()
 client = OpenAI()
 client.api_key = os.getenv("OPENAI_API_KEY")
 
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
+# Global variables to store the latest image's set of parameters, image url and image description 
+last_style = ""
+last_time = ""
+last_season = ""
+last_feeling = ""
+last_materials = []
+last_audience = ""
+last_market = ""
+last_pov = ""
+last_country = ""
+
 last_image_url = None
+last_image_description = None
+
 
 @app.before_request
 def before_request_handler():
@@ -51,6 +67,9 @@ def before_request_handler():
 
 
 def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str, country: str):
+    
+    update_latest_image_info(style, time, season, feeling, materials, audience, market, pov, country)
+
     base_prompt = f"""
         Generate an image of a kitchen with the following parameters:
         - Style: {style}
@@ -64,8 +83,21 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         - Let this country influence the design: {country}
         If a field is empty simply ignore that constraint, and the image should not include any depiction of a human and should not contain any visible text.
         """
+    # define update parameters as global last parameters set, and include those in the new edit prompt
     return base_prompt
 
+
+def update_latest_image_info(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, market: str, pov: str, country: str): 
+     global last_style, last_time, last_season, last_feeling, last_materials, last_audience, last_market, last_pov, last_country
+     last_style = style
+     last_time = time
+     last_season = season
+     last_feeling = feeling
+     last_materials = materials
+     last_audience = audience
+     last_market = market
+     last_pov = pov
+     last_country = country
 
 @app.route('/generate-image', methods=['POST'])
 def generate_image():
@@ -101,6 +133,7 @@ def generate_image():
 
 def generate_image_from_prompt(prompt): 
     global last_image_url
+    global last_image_description
 
     try: 
     # Call DALL·E API to generate the image
@@ -115,71 +148,33 @@ def generate_image_from_prompt(prompt):
         # Extract the image URL from the response
         image_url = response.data[0].url
         last_image_url = image_url
+        last_image_description = generate_image_description(image_url)
 
         return image_url
     except Exception as e: 
         raise RuntimeError(f"Failed to generate image: {str(e)}")
 
 
-def convert_image_url_to_PNG(image_url):
+def generate_image_description(image_url):
     try:
         # Download the image
         response = requests.get(image_url)
         response.raise_for_status()  # Check if the request was successful
         image = Image.open(BytesIO(response.content))
 
-        # Ensure the image is square
-        width, height = image.size
-        if width != height:
-            new_size = max(width, height)
-            new_image = Image.new("RGBA", (new_size, new_size), (0, 0, 0, 0))
-            new_image.paste(image, ((new_size - width) // 2, (new_size - height) // 2))
-            image = new_image
-
-        # Convert image to RGBA format
-        if image.mode != 'RGBA':
-            image = image.convert('RGBA')
-
-        # Convert image to PNG format
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        png_image_data = buffered.getvalue()
-
-        # Ensure the image is less than 4MB
-        max_size = 4 * 1024 * 1024  # 4MB
-        if len(png_image_data) > max_size:
-            raise RuntimeError("Image size exceeds 4MB limit")
-
-        return png_image_data
+        # Generate a description using the BLIP model
+        inputs = processor(image, return_tensors="pt")
+        out = model.generate(**inputs)
+        description = processor.decode(out[0], skip_special_tokens=True)
+        return description
     except Exception as e:
-        print(f"Error in convert_image_url_to_PNG: {str(e)}")
-        raise RuntimeError(f"Failed to convert image to PNG: {str(e)}")
-
-
-
-def edit_image_with_prompt(png_image, prompt):
-    try:
-        # Call DALL·E 2 to edit the image
-        response = client.images.edit(
-            image=png_image,
-            prompt=prompt,
-            size="1024x1024",
-            n=1,  # Number of images
-            model='dall-e-2',
-            response_format="url"  # Ensure the response format is URL
-        )
-        
-        # Extract the edited image URL from the response
-        edited_image_url = response.data[0].url
-        return edited_image_url
-    except Exception as e:
-        print(f"Error in edit_image_with_prompt: {str(e)}")
-        raise RuntimeError(f"Failed to edit image: {str(e)}")
+        raise RuntimeError(f"Failed to generate image description: {str(e)}")
 
 
 @app.route('/submit-input', methods=['POST'])
 def submit_input():
     global last_image_url
+    global last_image_description
     try:
         # Get the data from the JSON request
         data = request.get_json()
@@ -187,12 +182,27 @@ def submit_input():
         print(f"Received user input: {user_input}")
     
         if last_image_url:
-            prompt = user_input
+            prompt = f"""
+            Generate a realistic looking market image of a kitchen that is as similar as possible as the following image url: {last_image_url},
+            with the following description: {last_image_description}.
+            The image should also have the following parameters:
+            - Style: {last_style}
+            - Time of day: {last_time}
+            - Season: {last_season}
+            - Feeling/atmosphere: {last_feeling}
+            - Materials: {', '.join(last_materials)}
+            - Intended audience: {last_audience}
+            - Intended market where the kitchen will be made for: {last_market}
+            - Point of view: {last_pov}
+            - Let this country influence the design: {last_country},         
+            The image should also follow this prompt: {user_input}. If the prompt contradicts any previous description of the image, give the prompt more weight
+            and discard the original descriptions where necessary.  
+            """
         else:
-            print("no image yet")
+            print("no image yet") ## handle case where no image has been generated for edit to begin with 
 
-        png_image = convert_image_url_to_PNG(last_image_url)
-        image_url = edit_image_with_prompt(png_image, prompt)
+        #png_image = convert_image_url_to_PNG(last_image_url)
+        image_url = generate_image_from_prompt(prompt)
         last_image_url = image_url
 
         print("edited image url generated")
