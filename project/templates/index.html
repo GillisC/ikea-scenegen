@@ -167,7 +167,7 @@
                 
                             <!-- Save button, with onclick to toggle save by image_id -->
                             <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image_id }}')">
+                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
                                     &#128257;
                                 </button>
                                 
@@ -194,7 +194,7 @@
                 
                             <!-- Save button, with onclick to toggle save by image_id -->
                             <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image_id }}')">
+                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
                                     &#128257;
                                 </button>
                                 
@@ -221,7 +221,7 @@
                 
                             <!-- Save button, with onclick to toggle save by image_id -->
                             <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image_id }}')">
+                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
                                     &#128257;
                                 </button>
                                 
@@ -311,7 +311,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                if (data.status == "success") {
                     alert('Image saved successfully!');
                 } else {
                     alert('Failed to save image');

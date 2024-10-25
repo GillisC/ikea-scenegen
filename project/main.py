@@ -150,11 +150,11 @@ def index():
 
     recent_images = backend.images_manager.get_recent_images(user.id)
     saved_images = backend.images_manager.get_saved_images(user.id)
-    #shared_images = backend.images_manager.get_shared_images(user.id)
-
-    shared_images = None
+    shared_images = backend.images_manager.get_shared_images(user.id)
+    print(len(shared_images))
 
     return render_template("index.html", recent_images=recent_images, saved_images=saved_images, shared_images=shared_images)
+
 
 @app.route('/list-files', methods=['GET'])
 def get_files():
@@ -167,12 +167,13 @@ def handle_logout():
     session.pop("token", None)
     return redirect("/login")
 
+
 @app.route("/save-image", methods = ["POST"])
 def save_image():
     image_id = request.get_json().get("image_id")
     user = backend.user_manager.get_user(g.token_id)
     backend.images_manager.toggle_save(user.id, image_id)
-    return "success"
+    return jsonify({"status": "success"}), 200
 
 
 @app.route('/test-generate-image', methods=['POST'])
@@ -202,12 +203,11 @@ def get_all_users():
 def share_image():
     user = backend.user_manager.get_user(g.token_id)
     receiver_user_id = request.get_json().get("receiver_user_id")
-    image_id = request.get_json().get("selectedImageId")
-    print(receiver_user_id, image_id)
+    image_id = request.get_json().get("image_id")
 
     backend.images_manager.share_image(user.id, receiver_user_id, image_id)
-    return "success"
-
+    
+    return jsonify({"status": "success"}), 200
 
 
 

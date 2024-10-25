@@ -80,22 +80,29 @@ class ImagesManager:
     
 
     def get_shared_images(self, user_id):
-            """Returns a list of images that has been shared with the user"""
-            result = self.db_handler.select_query(
-                "SELECT image FROM SharedImages WHERE user_id=?;",
-                (user_id,)
-            )
+        """Returns a list of images that has been shared with the user"""
+        result = self.db_handler.select_query(
+            """
+            SELECT Images.image_id, Images.image
+            FROM Images
+            JOIN SharedImages ON Images.image_id = SharedImages.image_id
+            WHERE SharedImages.receiver_user_id = ?
+            """,
+            (user_id,)
+        )
 
-            if result == None:
-                return None
-            
-            shared_images = []
-            for row in result:
-                base64_image = convert_blob_to_base64(row["image"])  # If select_query returns tuples
-                shared_images.append(base64_image)
-            
-            return shared_images
+        if result == None:
+            return None
+        
+        result = [(row["image_id"], row["image"]) for row in result]
+        # Returns a list of dictionaries
+        result = encode_images_for_frontend(result)
 
+        for i in result:
+            image_id = i["image_id"]
+            i["is_saved"] = self.check_if_image_saved(user_id, image_id)
+
+        return result
 
     def toggle_save(self, user_id, image_id):
         """Adds or deleted the image from the saved table"""

@@ -3,11 +3,12 @@ let selectedUser = null;
 
 function openShareModal(imageId) {
     selectedImageId = imageId
+    console.log("image picked: " + selectedImageId)
     document.getElementById("share-modal").style.display = "block"
 }
 
 
-function closeShareModal(imageId) {
+function closeShareModal() {
     document.getElementById("share-modal").style.display = "none"
 }
 
@@ -67,14 +68,14 @@ function sendImageToUser() {
         headers: {
             "Content-Type": "application/json", 
         },
-        body: JSON.stringify(data)  
+        body: JSON.stringify(data)
     })
     .then(response => response.json())  
     .then(result => {
-        if (result.success) {
-            alert("Image sent successfully!");
+        if (result.status == "success") {
+            console.log("Image sent successfully!");
         } else {
-            alert("Failed to send image.");
+            console.log("Failed to send image.");
         }
     })
     .catch(error => {
