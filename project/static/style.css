@@ -200,26 +200,44 @@ body {
     }
 }
 
-
-.download-button {
+.generate-button-container-top {
+    /* The top right buttons */
     position: absolute;
-    top: 10px;
-    right: 10px;
-    display: none;
+    top: 0.4rem;
+    right: 0.4rem;
+    display: flex;
+    gap: 0.2rem;
 }
 
-.image-box:hover .download-button {
-    display: block;
+.download-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--charcoal);
+    cursor: pointer;
+    color: var(--off-white);
+    border-radius: 8px;
+    display: none;
 }
 
 .save-image-button {
-    position: absolute;
-    top: 10px;
-    right: 110px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--charcoal);
+    cursor: pointer;
+    color: var(--off-white);
+    border-radius: 8px;
     display: none;
 }
 
-.image-box:hover .save-image-button {
+.download-button:hover,
+.save-image-button:hover {
+    background-color: var(--soft-gray);    
+}
+
+.image-box:hover .save-image-button,
+.image-box:hover .download-button {
     display: block;
 }
 
@@ -261,25 +279,26 @@ body {
 }
 
 .toggle-button {
-    padding: 10px 15px;
+    padding: 0.5rem 0.8rem;
+    font-family: 'Noto Sans', sans-serif;
     background-color: var(--charcoal);
     cursor: pointer;
     color: var(--off-white);
     border-radius: 8px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .toggle-button.active {
-    background-color: var(--ikea-yellow);
-    color: var(--ikea-blue);
-    border-color: var(--ikea-blue);
+    background-color: var(--ikea-blue);
+    color: var(--ikea-yellow);
+    border-color: var(--ikea-yellow);
+    border-width: 2px;
 }
 
 .toggle-button:hover {
-    background-color: var(--ikea-yellow);
+    background-color: var(--ikea-yellow-hover);
     color: var(--ikea-blue);
 }
-
 
 .form-box {
     flex: 1;
@@ -324,6 +343,8 @@ input[type="text"] {
 
 .generate-button {
     width: 200px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1rem;
     position: relative;
     border: 2px solid #0058AB;
     background-color: #FBD914;

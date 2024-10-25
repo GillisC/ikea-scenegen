@@ -35,11 +35,12 @@
             <!-- The box where the image is loaded -->
             <div class="image-box">
                 <img id="generated-image" src="{{ image_url }}">
-                <a href="{{ image_url }}" download="mockup_image.png" id="download-link">
-                    <button class="download-button">Download</button>
-                </a>
-                <button class="save-image-button" onClick="saveImage()">Save</button>
-
+                <div class="generate-button-container-top">
+                    <a href="{{ image_url }}" download="mockup_image.png" id="download-link">
+                        <button class="download-button">Download</button>
+                    </a>
+                    <button class="save-image-button" onclick="saveImageFromURL()">Save</button>
+                </div>
                 <p class="status-text" id="no-image-text">No image generated yet.</p>
 
                 <div class="loading-bar-container">
@@ -308,6 +309,27 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ image_id: imageId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status == "success") {
+                    alert('Image saved successfully!');
+                } else {
+                    alert('Failed to save image');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function saveImageFromURL() {
+            const imageUrl = document.getElementById("download-link").href
+            console.log("image_url trying to save: " + imageUrl)
+            fetch('/save-image-by-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image_url: imageUrl })
             })
             .then(response => response.json())
             .then(data => {

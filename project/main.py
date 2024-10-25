@@ -151,7 +151,6 @@ def index():
     recent_images = backend.images_manager.get_recent_images(user.id)
     saved_images = backend.images_manager.get_saved_images(user.id)
     shared_images = backend.images_manager.get_shared_images(user.id)
-    print(len(shared_images))
 
     return render_template("index.html", recent_images=recent_images, saved_images=saved_images, shared_images=shared_images)
 
@@ -175,6 +174,18 @@ def save_image():
     backend.images_manager.toggle_save(user.id, image_id)
     return jsonify({"status": "success"}), 200
 
+@app.route("/save-image-by-url", methods = ["POST"])
+def save_image_by_url():
+    image_url = request.get_json().get("image_url")
+    user = backend.user_manager.get_user(g.token_id)
+    try: 
+        backend.images_manager.store_and_save(user.id, image_url)
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        print(f"Error occurring while trying to save: {e}")
+    return jsonify({"status": "failure"}), 200
+
+
 
 @app.route('/test-generate-image', methods=['POST'])
 def test_generate_image():
@@ -194,8 +205,6 @@ def test_generate_image():
 @app.route("/get_all_users", methods=["POST"])
 def get_all_users():
     all_usernames = backend.user_manager.get_all_usernames()
-    print(f"length: {len(all_usernames)}")
-    print(f"All users usernames: {all_usernames}")
     return jsonify(all_usernames)
 
 
