@@ -52,15 +52,23 @@ body {
 }
 
 .container {
+    position: relative;
     display: flex;
     width: 100%;
-    justify-content: space-between;
-    padding-top: 10rem;
+    justify-content: center;
+    padding-top: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
     box-sizing: border-box;
     gap: 10px;
 
+}
+
+.map-display {
+    margin-top: 500px;
+    align-content: center;
+    width: 500px; 
+    height: 500px;
 }
 
 /* Header Styling */
@@ -72,7 +80,6 @@ body {
     justify-content: center;
     align-items: center; /* Center items vertically */
     padding: 0 1rem; /* Add some padding to the sides */
-    position: fixed; /* Keeps the header fixed at the top */
     top: 0;
     left: 0;
     z-index: 1000; /* Ensures it stays on top of other elements */
@@ -143,7 +150,9 @@ body {
 
 .image-box {
     position: relative;
-    width: 60%;
+    max-width: 1024px;
+    width: 40%;
+    height: auto;
     padding: 4px;
     display: flex;
     justify-content: center;
@@ -243,6 +252,8 @@ body {
 
 .controls {
     width: 40%;
+    height: 40rem;
+    max-height: 1024px;
     display: flex;
     flex-direction: column;
     justify-self: start;
@@ -251,12 +262,14 @@ body {
     border: 4px solid var(--cool-gray);
     background-color: var(--soft-gray);
     border-radius: 10px;
+    overflow: scroll;
 }
 
 .toggle-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    
 }
 
 .toggle-group label {
@@ -281,6 +294,7 @@ body {
 .toggle-button {
     padding: 0.5rem 0.8rem;
     font-family: 'Noto Sans', sans-serif;
+    font-weight: bold;
     background-color: var(--charcoal);
     cursor: pointer;
     color: var(--off-white);
@@ -292,7 +306,6 @@ body {
     background-color: var(--ikea-blue);
     color: var(--ikea-yellow);
     border-color: var(--ikea-yellow);
-    border-width: 2px;
 }
 
 .toggle-button:hover {
@@ -372,7 +385,7 @@ input[type="text"] {
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
-    padding-top: 10rem;
+    padding-top: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
     box-sizing: border-box;

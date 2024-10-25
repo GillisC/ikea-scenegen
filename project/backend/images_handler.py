@@ -1,9 +1,9 @@
 import threading
-import requests
 import os
 from project.backend.database_handler import DatabaseHandler
 import uuid
 import base64
+import requests
 
 class ImagesManager:
 
@@ -44,12 +44,6 @@ class ImagesManager:
             (blob,)
         )
         last_inserted = self.db_handler.get_last_image_inserted()
-
-        # Update RecentImages table
-        self.db_handler.insert_query(
-            "INSERT INTO RecentImages (user_id, image_id, num) VALUES (?, ?, ?)",
-            (user_id, last_inserted, 1)
-        )
 
         self.db_handler.insert_query(
             "INSERT INTO SavedImages (user_id, image_id) VALUES (?, ?)",

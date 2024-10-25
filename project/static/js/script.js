@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // This will run when the user presses the generate button
     document.getElementById('generate-button').addEventListener('click', function() {
-        const testing = true;
+        const testing = false;
 
         console.log("Generate button clicked");
         const styleValue = document.querySelector('#style .toggle-button.active')?.getAttribute('data-value');
