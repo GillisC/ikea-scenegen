@@ -14,7 +14,7 @@ class BackendHandler:
     def __new__(cls):
         if not cls.instance:
             cls.instance = super().__new__(cls)
-            cls.instance.db_handler = DatabaseHandler(is_local_copy=True)
+            cls.instance.db_handler = DatabaseHandler(is_local_copy=False)
             cls.setup(cls.instance)  # Setup the managers once the instance is created
         return cls.instance
 
