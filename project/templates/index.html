@@ -25,8 +25,8 @@
     </header>
     
     <div class="tabs-container">
-        <button class="tab-button active" onclick="openTab('generate')">Mockup Generator</button>
-        <button class="tab-button" onclick="openTab('saved')">Saved Images</button>
+        <a href="{{ url_for('index') }}" class="tab-button {% if active_tab == 'generate' %}active{% endif %}">Mockup Generator</a>
+        <a href="{{ url_for('saved_images') }}" class="tab-button {% if active_tab == 'saved' %}active{% endif %}">Saved Images</a>
     </div>
     
     <!-- Mockup generation tab content -->

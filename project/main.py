@@ -146,13 +146,22 @@ def handle_register():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template("index.html", active_tab="generate")
+
+@app.route('/saved_images')
+def saved_images():
     user = backend.user_manager.get_user(g.token_id)
 
     recent_images = backend.images_manager.get_recent_images(user.id)
     saved_images = backend.images_manager.get_saved_images(user.id)
     shared_images = backend.images_manager.get_shared_images(user.id)
 
-    return render_template("index.html", recent_images=recent_images, saved_images=saved_images, shared_images=shared_images)
+    return render_template(
+        "saved.html", active_tab="saved",
+        recent_images=recent_images, 
+        saved_images=saved_images, 
+        shared_images=shared_images
+        )
 
 
 @app.route('/list-files', methods=['GET'])
