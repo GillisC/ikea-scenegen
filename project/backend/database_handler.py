@@ -12,7 +12,7 @@ class DatabaseHandler:
 
     instance = None
 
-    def __new__(cls, is_local_copy=True):
+    def __new__(cls, is_local_copy=False):
         """Constructor for the singleton class DatabaseHandler"""
         if not cls.instance:
             if sqlite3.threadsafety != 3:
