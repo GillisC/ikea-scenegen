@@ -7,3 +7,4 @@ database_local.db
 __pycache__/
 .env
 project/static/img/downloads/
+
