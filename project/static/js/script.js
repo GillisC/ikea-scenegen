@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
     handleButtonClick("#feeling");
     handleMultiSelectButtonClick("#materials");
     handleButtonClick("#audience");
-    handleButtonClick("#market");
     handleButtonClick("#pov");
     
     // This will run when the user presses the generate button
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const feelingValue = document.querySelector('#feeling .toggle-button.active')?.getAttribute('data-value');
         const materialsValues = Array.from(document.querySelectorAll('#materials .toggle-button.active')).map(button => button.getAttribute('data-value'));
         const audienceValue = document.querySelector('#audience .toggle-button.active')?.getAttribute('data-value');
-        const marketValue = document.querySelector('#market .toggle-button.active')?.getAttribute('data-value');
         const povValue = document.querySelector('#pov .toggle-button.active')?.getAttribute('data-value');
         const selectedCountry = getSelectedCountry();
 
@@ -60,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
             feeling: feelingValue,
             materials: materialsValues,
             audience: audienceValue,
-            market: marketValue,
             pov: povValue,
             country: selectedCountry
         };

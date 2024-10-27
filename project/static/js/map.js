@@ -2,12 +2,15 @@
 
 
 var selectedCountry = undefined
+var mapBoundries = new Map()
+const unselectedColor = "#0058ab"
+const selectedColor = "#fbd914"
 
   fetch('http://127.0.0.1:8080/list-files')
     .then(response => response.json())
     .then(data => {
       data.forEach(file => {
-        console.log(file);
+        //console.log(file);
       });
     })
     .catch(error => console.error('Error fetching files:', error));
@@ -32,18 +35,22 @@ fetch('http://127.0.0.1:8080/list-files')
               .then(response => response.json())
               .then(jsonData => {
                 // Add the GeoJSON layer to the map
-                L.geoJSON(jsonData, {
+                var countryName = file.replaceAll(".json", "").replaceAll("_", " ").replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
+                var bound = L.geoJSON(jsonData, {
                   onEachFeature: function (feature, layer) {
                     layer.on('click', function () {
-                      selectedCountry = file.replaceAll(".json", "").replaceAll("_", " ").replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+                      selectedCountry = countryName
                       changeCountryName(selectedCountry)
-                      console.log(selectedCountry)
+                      changeSelectedBoundColor(selectedCountry)
+                      //console.log(selectedCountry)
                     });
                   },
                   style: function (feature) {
-                    return {color: "#ff7800", weight: 2};
+                    return {color: unselectedColor, weight: 2};
                   }
-                }).addTo(map);
+                })
+                bound.addTo(map)
+                mapBoundries.set(countryName, bound)
               })
       .catch(error => console.error('Error loading GeoJSON:', error));
     });
@@ -58,4 +65,16 @@ fetch('http://127.0.0.1:8080/list-files')
   function changeCountryName(name)
   {
     document.getElementById("countryName").innerHTML = "Selected Country: " + name;
+  }
+
+  function changeSelectedBoundColor(name)
+  {
+    for (const i of mapBoundries.keys())
+    {
+      const bound = mapBoundries.get(i)
+      bound.setStyle({"color": unselectedColor})
+    }
+
+    const bound = mapBoundries.get(name)
+    bound.setStyle({"color": selectedColor})
   }
