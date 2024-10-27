@@ -36,3 +36,24 @@ function toggleSave(imageId) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+function saveImageFromURL() {
+    const imageUrl = document.getElementById("download-link").href
+    console.log("image_url trying to save: " + imageUrl)
+    fetch('/save-image-by-url', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image_url: imageUrl })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status == "success") {
+            alert('Image saved successfully!');
+        } else {
+            alert('Failed to save image');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}

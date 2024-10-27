@@ -152,9 +152,10 @@ def index():
 def saved_images():
     user = backend.user_manager.get_user(g.token_id)
 
-    recent_images = backend.images_manager.get_recent_images(user.id)
-    saved_images = backend.images_manager.get_saved_images(user.id)
-    shared_images = backend.images_manager.get_shared_images(user.id)
+    # Reverse the lists so the newly added is on the left most side of the page
+    recent_images = backend.images_manager.get_recent_images(user.id)[::-1]
+    saved_images = backend.images_manager.get_saved_images(user.id)[::-1]
+    shared_images = backend.images_manager.get_shared_images(user.id)[::-1]
 
     return render_template(
         "saved.html", active_tab="saved",
