@@ -110,7 +110,25 @@
                     {% endfor %}
                 {% endif %}
             </div>
-    </div>
+
+        </div>
+        
+        <div class="modal" id="share-modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeShareModal()">&times;</span>
+                <h2>Share Image</h2>
+                
+                <!-- Search box to find users -->
+                <input type="text" id="userSearchInput" oninput="searchUsers()" placeholder="Search for a user...">
+                
+                <!-- Results of the user search -->
+                <ul id="userResults"></ul>
+                
+                <!-- Share button -->
+                <button id="sendShareButton" onclick="sendImageToUser()">Send</button>
+            </div>
+        </div>
+        
     <script src="{{ url_for('static', filename='js/saving.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/share-modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/share_modal.js') }}"></script>
 </body>

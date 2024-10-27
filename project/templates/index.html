@@ -51,7 +51,7 @@
             <div class="controls">
                 <div class="toggle-group">
                     <label>Map:</label>
-                    <div id="map" style="width: 100%; height: 500px;"></div>
+                    <div class="map-display" id="map"></div>
                     <script src="{{ url_for('static', filename='js/leaflet/leaflet.js') }}"></script>
                     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
                 </div>
@@ -238,22 +238,6 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-        </div>
-
-        <div class="modal" id="share-modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeShareModal()">&times;</span>
-                <h2>Share Image</h2>
-                
-                <!-- Search box to find users -->
-                <input type="text" id="userSearchInput" oninput="searchUsers()" placeholder="Search for a user...">
-                
-                <!-- Results of the user search -->
-                <ul id="userResults"></ul>
-                
-                <!-- Share button -->
-                <button id="sendShareButton" onclick="sendImageToUser()">Send</button>
-            </div>
         </div>
 
     </div>
