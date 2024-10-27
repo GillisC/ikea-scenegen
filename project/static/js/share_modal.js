@@ -24,12 +24,10 @@ function searchUsers() {
     .then(response => response.json())
     .then(data => {
         users = data;
-        console.log("all users: " + users);
 
         const filteredUsers = users.filter(user => 
             user.username.toLowerCase().includes(query.toLowerCase()
         ));
-        console.log("filtered:  " + filteredUsers)
         
         const userResultsList = document.getElementById('userResults');
         userResultsList.innerHTML = ''; // Clear 
@@ -92,8 +90,4 @@ function sendImageToUser() {
         console.error("Error sending image:", error);
         alert("An error occurred while trying to share an image.");
     });
-}
-
-function toggleUserSelection(userBox) {
-    userBox.classList.toggle("selected"); // Add/remove selected class
 }
