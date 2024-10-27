@@ -17,9 +17,9 @@ const selectedColor = "#fbd914"
 
 
 var map = L.map('map', {
-  scrollWheelZoom: false,
+  scrollWheelZoom: true,
   zoomControl: false 
-}).setView([60.505, 10.09], 3);
+}).setView([60.505, 10.09], 2.1);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
