@@ -14,8 +14,8 @@ var selectedCountry = undefined
 
 
 var map = L.map('map', {
-  scrollWheelZoom: true,
-  zoomControl: true 
+  scrollWheelZoom: false,
+  zoomControl: false 
 }).setView([60.505, 10.09], 3);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
