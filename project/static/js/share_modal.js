@@ -35,10 +35,14 @@ function searchUsers() {
         userResultsList.innerHTML = ''; // Clear 
     
         filteredUsers.forEach(user => {
-            const li = document.createElement('li');
-            li.textContent = user.username;
-            li.onclick = () => selectUser(user);
-            userResultsList.appendChild(li);
+            const userBox = document.createElement('div');
+            userBox.className = 'user-box';
+            userBox.textContent = user.username;
+            
+            // 
+            userBox.onclick = () => selectUser(user, userBox);
+            
+            userResultsList.appendChild(userBox);
         });
     })    
     .catch(error => console.error("Error fetching users", error));
@@ -47,9 +51,15 @@ function searchUsers() {
 
 let selectedUserId = null;
 
-function selectUser(user) {
+function selectUser(user, userBox) {
     selectedUserId = user.id;
-    alert(`Selected user: ${user.username}, id: ${user.id}`);
+
+    // used to style the selected box differently
+    const allUserBoxes = document.querySelectorAll(".user-box");
+    allUserBoxes.forEach(box => box.classList.remove("selected"));
+    userBox.classList.toggle("selected");
+
+    console.log(`Selected user: ${user.username}, id: ${user.id}`);
 }
 
 function sendImageToUser() {
@@ -82,4 +92,8 @@ function sendImageToUser() {
         console.error("Error sending image:", error);
         alert("An error occurred while trying to share an image.");
     });
+}
+
+function toggleUserSelection(userBox) {
+    userBox.classList.toggle("selected"); // Add/remove selected class
 }

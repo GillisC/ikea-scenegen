@@ -122,13 +122,13 @@
                 <input type="text" id="userSearchInput" oninput="searchUsers()" placeholder="Search for a user...">
                 
                 <!-- Results of the user search -->
-                <ul id="userResults"></ul>
+                <div id="userResults" class="user-results"></div>
                 
                 <!-- Share button -->
-                <button id="sendShareButton" onclick="sendImageToUser()">Send</button>
+                <button class="send-btn" id="sendShareButton" onclick="sendImageToUser()">Send</button>
             </div>
         </div>
-        
+
     <script src="{{ url_for('static', filename='js/saving.js') }}"></script>
     <script src="{{ url_for('static', filename='js/share_modal.js') }}"></script>
 </body>

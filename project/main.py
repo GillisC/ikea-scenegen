@@ -213,7 +213,9 @@ def test_generate_image():
 
 @app.route("/get_all_users", methods=["POST"])
 def get_all_users():
-    all_usernames = backend.user_manager.get_all_usernames()
+    # Returns all user execept the user themselves
+    user = backend.user_manager.get_user(g.token_id)
+    all_usernames = backend.user_manager.get_all_usernames(user.id)
     return jsonify(all_usernames)
 
 

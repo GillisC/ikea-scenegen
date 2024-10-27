@@ -140,8 +140,11 @@ class UserManager:
             )
 
     
-    def get_all_usernames(self):
-        result = self.db_handler.select_query("SELECT id, username FROM Users")
+    def get_all_usernames(self, user_id):
+        result = self.db_handler.select_query(
+            "SELECT id, username FROM Users WHERE NOT id=?",
+            (user_id,)
+            )
         usernames = [{"id": row[0], "username": row[1]} for row in result]
         
         return usernames

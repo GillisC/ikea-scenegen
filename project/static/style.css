@@ -489,13 +489,68 @@ input[type="text"] {
 
 /* Modal Content (the box) */
 .modal-content {
-    background-color: white;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--off-white);
     margin: 15% auto; /* Center the modal */
     padding: 20px;
-    border: 1px solid #888;
-    width: 400px; /* Specify the width of the modal */
+    border: 4px solid var(--ikea-blue);
+    width: 400px;
+    text-align: center;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#userResults {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;  /* Allows scrolling if there are many users */
+    margin-top: 10px;
+}
+
+.user-box {
+    padding: 10px;
+    border: 1px solid var(--cool-gray);
+    border-radius: 0.5rem;
+    background-color: var(--off-white);
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    text-align: center;
+
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--darker-charcoal);
+    font-weight: 400;
+    user-select: none;
+}
+
+.user-box:hover {
+    background-color: var(--light-gray);
+}
+
+.user-box.selected {
+    background-color: var(--cool-gray); /* Choose a highlight color */
+    color: var(--ikea-blue);  /* Make text white to contrast */
+    border: 2px solid var(--charcoal);
+
+}
+
+.send-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--off-white);
+    background-color: var(--charcoal);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.send-btn:hover {
+    background-color: var(--soft-gray);
 }
 
 /* Close button (X) */
