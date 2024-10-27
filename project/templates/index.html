@@ -25,8 +25,8 @@
     </header>
     
     <div class="tabs-container">
-        <button class="tab-button active" onclick="openTab('generate')">Mockup Generator</button>
-        <button class="tab-button" onclick="openTab('saved')">Saved Images</button>
+        <a href="{{ url_for('index') }}" class="tab-button {% if active_tab == 'generate' %}active{% endif %}">Mockup Generator</a>
+        <a href="{{ url_for('saved_images') }}" class="tab-button {% if active_tab == 'saved' %}active{% endif %}">Saved Images</a>
     </div>
     
     <!-- Mockup generation tab content -->
@@ -51,7 +51,7 @@
             <div class="controls">
                 <div class="toggle-group">
                     <label>Map:</label>
-                    <div id="map" class="map-display"></div>
+                    <div class="map-display" id="map"></div>
                     <script src="{{ url_for('static', filename='js/leaflet/leaflet.js') }}"></script>
                     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
                 </div>
@@ -154,194 +154,11 @@
         </div>
     </div>
 
-    <!-- Saved images tab content-->
-    <div id="saved" class="tab-content">
-        <div class="saved-container">
-
-            <h3 class="small-title">Recently generated</h1>
-                <div class="recents-container">
-                    {% if recent_images %}
-                        {% for image in recent_images %}
-                        <div class="recent-image-card">
-                            <!-- Display the image -->
-                            <img src="{{ image.image_data }}" alt="Image"/>
-                
-                            <!-- Save button, with onclick to toggle save by image_id -->
-                            <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
-                                    &#128257;
-                                </button>
-                                
-                                <button class="star-save-button" onclick="toggleStar(this, '{{ image.image_id }}')">
-                                    {% if image.is_saved %}
-                                    &#9733;
-                                    {% else %}
-                                    &#9734;
-                                    {% endif %}
-                                </button>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-            <h3 class="small-title">Saved mockups</h1>
-                <div class="recents-container">
-                    {% if saved_images %}
-                        {% for image in saved_images %}
-                        <div class="recent-image-card">
-                            <!-- Display the image -->
-                            <img src="{{ image.image_data }}" alt="Image"/>
-                
-                            <!-- Save button, with onclick to toggle save by image_id -->
-                            <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
-                                    &#128257;
-                                </button>
-                                
-                                <button class="star-save-button" onclick="toggleStar(this, '{{ image.image_id }}')">
-                                    {% if image.is_saved %}
-                                    &#9733;
-                                    {% else %}
-                                    &#9734;
-                                    {% endif %}
-                                </button>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-            <h3 class="small-title">Images shared with you</h1>
-                <div class="recents-container">
-                    {% if shared_images %}
-                        {% for image in shared_images %}
-                        <div class="recent-image-card">
-                            <!-- Display the image -->
-                            <img src="{{ image.image_data }}" alt="Image"/>
-                
-                            <!-- Save button, with onclick to toggle save by image_id -->
-                            <div class="button-container">
-                                <button class="share-button" onclick="openShareModal('{{ image.image_id }}')">
-                                    &#128257;
-                                </button>
-                                
-                                <button class="star-save-button" onclick="toggleStar(this, '{{ image.image_id }}')">
-                                    {% if image.is_saved %}
-                                    &#9733;
-                                    {% else %}
-                                    &#9734;
-                                    {% endif %}
-                                </button>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-        </div>
-
-        <div class="modal" id="share-modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeShareModal()">&times;</span>
-                <h2>Share Image</h2>
-                
-                <!-- Search box to find users -->
-                <input type="text" id="userSearchInput" oninput="searchUsers()" placeholder="Search for a user...">
-                
-                <!-- Results of the user search -->
-                <ul id="userResults"></ul>
-                
-                <!-- Share button -->
-                <button id="sendShareButton" onclick="sendImageToUser()">Send</button>
-            </div>
-        </div>
-
     </div>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/share_modal.js') }}"></script>
-    <script>
-        function openTab(tabName) {
-            console.log("")
-            var i;
-            var tabContent = document.getElementsByClassName("tab-content");
-            var tabButtons = document.getElementsByClassName("tab-button");
-        
-            // Hide all tab content
-            for (i = 0; i < tabContent.length; i++) {
-                    tabContent[i].style.display = "none";
-                tabContent[i].classList.remove("active");
-            }
-        
-            // Remove active class from all buttons
-            for (i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove("active");
-            }
-        
-            // Show the selected tab content and mark the button as active
-            document.getElementById(tabName).style.display = "block";
-            document.getElementById(tabName).classList.add("active");
-            event.currentTarget.classList.add("active");
-        }
-        function toggleStar(button, imageId) {
-            // Check the current state (filled or unfilled)
-            if (button.innerHTML === '★') {
-                // Star is filled, toggle to unfilled
-                button.innerHTML = '☆'; // Change to unfilled star
-                button.classList.remove('filled');
-                button.classList.add('unfilled');
-                
-                // Optionally, remove the saved image
-            } else {
-                // Star is unfilled, toggle to filled
-                button.innerHTML = '★'; // Change to filled star
-                button.classList.remove('unfilled');
-                button.classList.add('filled');
-                
-                // Optionally, save the image
-            }
-            toggleSave(imageId)
-        }
-        function toggleSave(imageId) {
-            fetch('/save-image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image_id: imageId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status == "success") {
-                    alert('Image saved successfully!');
-                } else {
-                    alert('Failed to save image');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function saveImageFromURL() {
-            const imageUrl = document.getElementById("download-link").href
-            console.log("image_url trying to save: " + imageUrl)
-            fetch('/save-image-by-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image_url: imageUrl })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status == "success") {
-                    alert('Image saved successfully!');
-                } else {
-                    alert('Failed to save image');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-    </script>
+    <script src="{{ url_for('static', filename='js/saving.js') }}"></script>
+    
 </body>
 </html>

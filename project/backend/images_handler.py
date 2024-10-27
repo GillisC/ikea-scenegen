@@ -94,9 +94,15 @@ class ImagesManager:
         if result == None:
             return None
         
-        result = [(row["image_id"], row["image"]) for row in result] 
+        result = [(row["image_id"], row["image"]) for row in result]
+        # Returns a list of dictionaries
+        result = encode_images_for_frontend(result)
+
+        for i in result:
+            image_id = i["image_id"]
+            i["is_saved"] = self.check_if_image_saved(user_id, image_id) 
         
-        return encode_images_for_frontend(result)
+        return result
     
 
     def get_shared_images(self, user_id):
