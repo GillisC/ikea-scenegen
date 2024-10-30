@@ -44,7 +44,7 @@ def before_request_handler():
             return redirect("/login")
 
 
-def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, pov: str, country: str):
+def generate_prompt(style: str, time: str, season: str, feeling: str, materials: list[str], audience: str, pov: str, country: str, lighting: str, aperture: str):
     base_prompt = f"""
         Generate an image of a kitchen with the following parameters:
         - Style: {style}
@@ -55,6 +55,8 @@ def generate_prompt(style: str, time: str, season: str, feeling: str, materials:
         - Intended audience: {audience}
         - Point of view: {pov}
         - Let this country influence the design: {country}
+        - Make the image look like this lighting was used to photograph it: {lighting}
+        - Make the image look like it was taken with a camera with an aperture of: {aperture}
         If a field is empty simply ignore that constraint, and the image should not include any depiction of a human and should not contain any visible text.
         """
     return base_prompt
@@ -78,9 +80,11 @@ def generate_image():
         audience = data.get('audience')
         pov = data.get('pov')
         country = data.get("country")
+        lighting = data.get("lighting")
+        aperture = data.get("aperture")
 
         # Generate the prompt dynamically based on the input
-        prompt = generate_prompt(style, time, season, feeling, materials, audience, pov, country)
+        prompt = generate_prompt(style, time, season, feeling, materials, audience, pov, country, lighting, aperture)
         print(prompt)
         # Call DALL·E API to generate the image
         response = client.images.generate(

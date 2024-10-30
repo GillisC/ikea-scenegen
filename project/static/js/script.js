@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
     handleMultiSelectButtonClick("#materials");
     handleButtonClick("#audience");
     handleButtonClick("#pov");
-    
+    handleButtonClick("#lighting");
+    handleButtonClick("#aperture");
+
     // This will run when the user presses the generate button
     document.getElementById('generate-button').addEventListener('click', function() {
         const testing = false;
@@ -50,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const audienceValue = document.querySelector('#audience .toggle-button.active')?.getAttribute('data-value');
         const povValue = document.querySelector('#pov .toggle-button.active')?.getAttribute('data-value');
         const selectedCountry = getSelectedCountry();
+        const lightingValue = document.querySelector('#lighting .toggle-button.active')?.getAttribute('data-value');
+        const apertureValue = document.querySelector('#aperture .toggle-button.active')?.getAttribute('data-value');
 
         const promptData = {
             style: styleValue,
@@ -59,7 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
             materials: materialsValues,
             audience: audienceValue,
             pov: povValue,
-            country: selectedCountry
+            country: selectedCountry,
+            lighting: lightingValue,
+            aperture: apertureValue
         };
         console.log("Prompt data gathered: " + JSON.stringify(promptData, null, 2));
 
