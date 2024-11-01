@@ -11,9 +11,12 @@ IKEA SceneGen is a powerful tool for generating scene mockups. This project aims
 ## Installation
 
 To get started with IKEA SceneGen, follow these steps:
+```
+    1. Clone the repository.
+    2. Install Python, NodeJS and npm.
+    3. Run setup.sh on linux or setup.bat on windows to install python dependencies.
+    4. Run run.sh on linux or run.bat on windows to launch server.
+    5. Navigate to 127.0.0.1:8080 in your browser.
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/GillisC/ikea-scenegen.git
-   cd ikea-scenegen
+
 
